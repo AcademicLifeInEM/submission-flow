@@ -11,8 +11,6 @@
  *	License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
-require('inc/element-hide.php');
-
 // Enqueue Javascript
 function enqueue_plugin_scripts() {
 
