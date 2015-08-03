@@ -59,6 +59,7 @@ function add_peer_reviewer_info_metabox( $page ) {
 	 */
 	$value = get_post_meta( $page->ID, '_my_meta_value_key', true );
 
+    // TODO: MOVE TO EXTERNAL FILE AND REQUIRE HERE
 	echo '<label for="myplugin_new_field">';
 	_e( 'Description for this field', 'myplugin_textdomain' );
 	echo '</label> ';
