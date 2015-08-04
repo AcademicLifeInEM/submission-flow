@@ -10,6 +10,7 @@ jQuery(document).ready(function($) {
     $('#postbox-container-3').hide();
     $('#postbox-container-4').hide();
     $('#show-settings-link').hide();
+    $('#postimagediv').hide();
 
     /**
      * EXPLICIT SHOWS
