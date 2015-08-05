@@ -9,8 +9,9 @@ jQuery(document).ready(function($) {
     $('#dashboard_primary').hide(); // Second set of sortables
     $('#postbox-container-3').hide();
     $('#postbox-container-4').hide();
-    $('#show-settings-link').hide();
+    $('#screen-options-link-wrap').hide();
     $('#postimagediv').hide();
+    $('#latest-comments').hide();
 
     /**
      * EXPLICIT SHOWS
@@ -30,5 +31,6 @@ jQuery(document).ready(function($) {
 
     // META BOXES
     $('#peer_reviewer_info_metabox').show();
+    $('#coauthor_meta_box').show();
 
 });
