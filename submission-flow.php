@@ -13,14 +13,19 @@
 
 /**
  *
- *   ___ __  __ ____   ___  ____ _____  _    _   _ _____ 
+ *   ___ __  __ ____   ___  ____ _____  _    _   _ _____
  *  |_ _|  \/  |  _ \ / _ \|  _ \_   _|/ \  | \ | |_   _|
  *   | || |\/| | |_) | | | | |_) || | / _ \ |  \| | | |
  *   | || |  | |  __/| |_| |  _ < | |/ ___ \| |\  | | |
  *  |___|_|  |_|_|    \___/|_| \_\|_/_/   \_\_| \_| |_|
  *
- * NOTE: THIS PLUGIN DEPENDS ON THE MODIFICATION OF THE COAUTHORS PLUS
- * PLUGIN. BE SURE TO COMMENT OUT LINES 1041-1049. (version: 3.1.1)
+ * NOTE: THIS PLUGIN DEPENDS ON THE MODIFICATION OF THE FOLLWOING PLUGINS:
+ *
+ * 1) CO-AUTHORS PLUS:
+ *    - COMMENT OUT LINES 1041-1049. (version: 3.1.1)
+ * 2) FANCIEST AUTHOR BOX: (/includes/ts-fab-user-settings.php)
+ *    - LINE 21: DELETE UP TO '?>'
+ *    - LINE 137: DELETE '}'
  */
 
 ////////////////////
@@ -28,11 +33,11 @@
 ////////////////////
 
 /**
- * ADD COPYEDITORS EMAIL ADDRESSES TO THE BELOW LIST
+ * ADD COPYEDITORS' EMAIL ADDRESSES TO THE BELOW LIST
  */
 
 $submission_editor_email = 'dereksifford@gmail.com';
-$copyeditor_email_list = array ( 'dereksifford@gmail.com', 'dereksifford@gmail.com', 'dereksifford@gmail.com' );
+$copyeditor_email_list = array ( 'copyeditor1@maildrop.cc', 'copyeditor2@maildrop.cc', 'copyeditor3@maildrop.cc' );
 
 
 // Enqueue Javascript
@@ -51,14 +56,13 @@ function enqueue_plugin_scripts() {
         global $post;
 
         $submission_page = get_page_by_title( 'New Submission' );
-
         $parent_page = $post->post_parent;
 
         if ( $parent_page == $submission_page->ID ) {
 
             wp_register_script( 'copyeditor-views', plugins_url( 'inc/js/copyeditor-views.js', __FILE__ ), array( 'jquery' ) );
-
             wp_enqueue_script( 'copyeditor-views' );
+
         }
 
     }
@@ -91,7 +95,7 @@ function users_own_attachments( $wp_query_obj ) {
     if( ( 'upload.php' != $pagenow ) && ( ( 'admin-ajax.php' != $pagenow ) || ( $_REQUEST['action'] != 'query-attachments' ) ) )
         return;
 
-    if( !current_user_can('delete_pages') )
+    if( current_user_can('subscriber') )
         $wp_query_obj->set('author', $current_user->id );
 
     return;
@@ -170,12 +174,10 @@ function add_coauthor_meta_box( $post ) {
 
 }
 
-
-
 /**
  * SAVE META BOX FIELDS TO DATABASE
  */
-
+// TODO: ADD ANOTHER PEER_REVIEWER
 // Peer review info meta box
 function save_peer_review_info_meta( $post_id ) {
 
@@ -228,32 +230,38 @@ function save_coauthor_details_meta( $post_id ) {
             // ----- CREATE NEW USER LOGIC ----- //
             ///////////////////////////////////////
 
-
-            $username = $_POST['coauthor_' . $i . '_first_name'] . '.' . $_POST['coauthor_' . $i . '_last_name'];
+            $username = ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . '.' . preg_replace('/\s+/', '.', ucwords( $_POST['coauthor_' . $i . '_last_name'] ) );
 
             // IF USER DOES NOT ALREADY EXIST... CREATE NEW USER
-            if ( get_user_by( 'email', $_POST['coauthor_' . $i . '_email'] ) == '' && get_user_by( 'login', $username ) == '' ) {
+            if ( get_user_by( 'email', strtolower( $_POST['coauthor_' . $i . '_email'] ) ) == '' && get_user_by( 'login', $username ) == '' ) {
 
                 // Corrects error where a user with the login '.' would be created
                 if ($username == '.') {
                     break;
                 }
+                $userdata = array(
+                    'user_pass' => 'ALiEMSubmissionUser',
+                    'user_login' => $username,
+                    'user_email' => $_POST['coauthor_' . $i . '_email'],
+                    'display_name' => ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . ' ' . ucwords( $_POST['coauthor_' . $i . '_last_name'] ),
+                    'first_name' => ucwords( $_POST['coauthor_' . $i . '_first_name'] ),
+                    'last_name' => ucwords( $_POST['coauthor_' . $i . '_last_name'] ),
+                    'description' => $_POST['coauthor_' . $i . '_background'],
+                    'role' => 'subscriber',
+                );
 
-                $password = 'ALiEMSubmissionUser';
-                wp_create_user( $username, $password );
+                $new_user_id = wp_insert_user( $userdata );
+                update_user_meta( $new_user_id, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
 
             }
-
         }
     }
-
 }
 add_action( 'save_post', 'save_coauthor_details_meta' );
 
 
 
-
-// RETRIEVE META FOR COPYEDITORS
+// DISPLAY META FOR COPYEDITORS
 function display_meta_for_copyeditors() {
 
     global $post;
@@ -289,73 +297,66 @@ function display_meta_for_copyeditors() {
 }
 add_action( 'admin_head', 'display_meta_for_copyeditors' );
 
-
-
 /**
  * END META BOX FUNCTIONS
  */
 
 
 /**
- * BEGIN EMAIL FUNCTION -- EMAIL COPYEDITORS
+ * BEGIN EMAIL FUNCTIONS
  */
+
 function send_email_to_copyeditor( $post ) {
-
-    global $copyeditor_email_list, $submission_editor_email;
-
-    $testinggg = 'asfasfasdasdfasdasfas8757asdf85@98yadsf67yasd.com';
 
     if ( current_user_can('subscriber') ) {
 
+        global $copyeditor_email_list, $submission_editor_email;
+
+        // Set parent page to 'New Submission'
+        $submission_page = get_page_by_title( 'New Submission' );
+        $updated_post = array(
+            'ID' => $post->ID,
+            'post_parent' => $submission_page->ID,
+        );
+        wp_update_post( $updated_post );
+
+        // Is 'copyeditor_rotation' defined yet in the database? If not, start at 0
         if ( get_option('copyeditor_rotation') == false ) {
-
             add_option( 'copyeditor_rotation', 0 );
-
         }
 
+        // Variable to hold current number in copyeditor rotation
         $which_copyeditor = get_option( 'copyeditor_rotation' );
-        $headers = array(
-            'From: ALiEM <mlin@aliem.com>;',
-            'Cc: ' . $submission_editor_email,
-        );
 
-// TODO: FINALIZE EMAIL MESSAGE
-
+        // Get author details, then set display name for email
 		$user_info = get_userdata($post->post_author);
-
         $submitter_name = ( $user_info->display_name == '' ? $user_info->nicename : $user_info->display_name );
 
-		$subject = 'New Submission: ' . $post->post_title;
-		$message = 'A post "' . $post->post_title . '" by ' . $submitter_name . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
+        // Set headers, subject, and message for email
+        $headers = array(
+            'From: ALiEM <submission@aliem.com>;',
+            'Cc: ' . $submission_editor_email,
+        );
+        $subject = 'New Submission: ' . $post->post_title;
+// TODO: FINALIZE EMAIL MESSAGE
+        $message = 'A post "' . $post->post_title . '" by ' . $submitter_name . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
 
+        // Send the email
         wp_mail( $copyeditor_email_list[$which_copyeditor], $subject, $message, $headers );
 
+        // If the copyeditor rotation is not at the end, increment by 1. Otherwise, set back to 0.
         if ( $which_copyeditor < count($copyeditor_email_list) - 1 ) {
-
             $which_copyeditor++;
             update_option( 'copyeditor_rotation', $which_copyeditor );
-
         } else {
-
             update_option( 'copyeditor_rotation', 0 );
-
         }
 
 	}
 
 }
-// TODO: ADD TO THE ABOVE FUNCTION --- AUTOMATICALLY SET PARENT PAGE
 add_action( 'draft_to_pending', 'send_email_to_copyeditor' );
 
-
-/**
- * END EMAIL FUNCTION -- EMAIL COPYEDITORS
- */
-
-
- /**
-  * BEGIN EMAIL FUNCTION -- EMAIL EXPERT PEER REVIEWER
-  */
 
 function send_email_to_peer_reviewer() {
 
@@ -382,20 +383,35 @@ function send_email_to_peer_reviewer() {
     		$subject = 'New Submission: ' . $user_info->user_nicename . ' submitted a post';
     		$message = 'A post "' . $post->post_title . '" by ' . $user_info->user_nicename . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
             $headers = array(
-                'From: ALiEM <mlin@aliem.com>;',
+                'From: ALiEM <submission@aliem.com>;',
                 'Cc: ' . $submission_editor_email,
             );
             wp_mail( $PR_email, $subject, $message, $headers );
 
         }
-
-
-
     }
-
 }
 add_action( 'pending_to_publish', 'send_email_to_peer_reviewer' );
 
+/**
+ * END EMAIL FUNCTIONS
+ */
+
+// CONVERT FINALIZED SUBMISSION 'PAGE' INTO A 'POST' ON STATUS CHANGE (PUBLISH TO DRAFT)
+function finalize_submission( $post ) {
+
+    $submission_page = get_page_by_title( 'New Submission' );
+    $parent_page = $post->post_parent;
+
+    if ( $parent_page == $submission_page->ID ) {
+
+        $page_to_post = $post;
+        $page_to_post->post_type = 'post';
+        wp_update_post( $page_to_post );
+    }
+
+}
+add_action('publish_to_draft', 'finalize_submission');
 
 
 ?>
