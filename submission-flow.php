@@ -37,7 +37,7 @@
  */
 
 $submission_editor_email = 'dereksifford@gmail.com';
-$copyeditor_email_list = array ( 'copyeditor1@maildrop.cc', 'copyeditor2@maildrop.cc', 'copyeditor3@maildrop.cc' );
+$copyeditor_email_list = array( 'copyeditor1@maildrop.cc', 'copyeditor2@maildrop.cc', 'copyeditor3@maildrop.cc' );
 
 
 // Enqueue Javascript
@@ -142,10 +142,15 @@ function add_peer_reviewer_meta_box( $post ) {
 
 	$values = get_post_custom( $post->ID );
 
-    $PR_first_name = $values['PR_first_name'][0];
-    $PR_last_name = $values['PR_last_name'][0];
-    $PR_email = $values['PR_email'][0];
-    $PR_background_info = $values['PR_background_info'][0];
+    for ( $i = 1; $i < 3; $i++ ) {
+
+        ${'PR_first_name_' . $i} = $values['PR_first_name_' . $i][0];
+        ${'PR_last_name_' . $i} = $values['PR_last_name_' . $i][0];
+        ${'PR_email_' . $i} = $values['PR_email_' . $i][0];
+        ${'PR_background_info_' . $i} = $values['PR_background_info_' . $i][0];
+
+    }
+
 
     require('/inc/meta-peer-reviewer-info.php');
 
@@ -159,7 +164,7 @@ function add_coauthor_meta_box( $post ) {
 
     $values = get_post_custom( $post->ID );
 
-    for ($i=1; $i < 4; $i++) {
+    for ( $i=1; $i < 5; $i++ ) {
 
         ${'coauthor_' . $i . '_first_name'} = $values['coauthor_' . $i . '_first_name'][0];
         ${'coauthor_' . $i . '_last_name'} = $values['coauthor_' . $i . '_last_name'][0];
@@ -188,13 +193,22 @@ function save_peer_review_info_meta( $post_id ) {
     if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
 			return;
 	}
+// FIXME:
+    if ( isset( $_POST['PR_first_name_1']) ) {
 
-    if ( isset( $_POST['PR_first_name']) ) {
+        update_post_meta( $post_id, 'PR_first_name_1',  $_POST['PR_first_name_1'] );
+        update_post_meta( $post_id, 'PR_last_name_1',  $_POST['PR_last_name_1'] );
+        update_post_meta( $post_id, 'PR_email_1',  $_POST['PR_email_1'] );
+        update_post_meta( $post_id, 'PR_background_info_1',  $_POST['PR_background_info_1'] );
 
-        update_post_meta( $post_id, 'PR_first_name',  $_POST['PR_first_name'] );
-        update_post_meta( $post_id, 'PR_last_name',  $_POST['PR_last_name'] );
-        update_post_meta( $post_id, 'PR_email',  $_POST['PR_email'] );
-        update_post_meta( $post_id, 'PR_background_info',  $_POST['PR_background_info'] );
+    }
+
+    if ( isset( $_POST['PR_first_name_2']) ) {
+
+        update_post_meta( $post_id, 'PR_first_name_2',  $_POST['PR_first_name_2'] );
+        update_post_meta( $post_id, 'PR_last_name_2',  $_POST['PR_last_name_2'] );
+        update_post_meta( $post_id, 'PR_email_2',  $_POST['PR_email_2'] );
+        update_post_meta( $post_id, 'PR_background_info_2',  $_POST['PR_background_info_2'] );
 
     }
 
@@ -214,7 +228,7 @@ function save_coauthor_details_meta( $post_id ) {
 
     if ( current_user_can( 'subscriber' ) ) {
 
-        for ($i=1; $i < 5; $i++) {
+        for ( $i = 1; $i < 5; $i++ ) {
 
             if ( isset( $_POST['coauthor_' . $i . '_first_name'] ) ) {
 
@@ -274,12 +288,16 @@ function display_meta_for_copyeditors() {
 
         $post_meta = get_post_custom( $post->ID );
 
-        $PR_first_name = $post_meta['PR_first_name'][0];
-        $PR_last_name = $post_meta['PR_last_name'][0];
-        $PR_email = $post_meta['PR_email'][0];
-        $PR_background_info = $post_meta['PR_background_info'][0];
+        for ( $i = 1; $i < 3; $i++ ) {
 
-        for ($i=1; $i < 4; $i++) {
+            ${'PR_first_name_' . $i} = $post_meta['PR_first_name_' . $i][0];
+            ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
+            ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
+            ${'PR_background_info_' . $i} = $post_meta['PR_background_info_' . $i][0];
+
+        }
+
+        for ( $i = 1; $i < 5; $i++ ) {
 
             ${'coauthor_' . $i . '_first_name'} = $post_meta['coauthor_' . $i . '_first_name'][0];
             ${'coauthor_' . $i . '_last_name'} = $post_meta['coauthor_' . $i . '_last_name'][0];
