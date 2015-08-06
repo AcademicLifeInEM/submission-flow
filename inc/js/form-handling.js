@@ -1,32 +1,33 @@
 jQuery(document).ready(function($) {
 
-    var firstName = $('#PR_first_name');
-    var lastName = $('#PR_last_name');
-    var emailAddress = $('#PR_email');
-    var backgroundInfo = $( "textarea[name|='PR_background_info']" );
+    var firstName1 = $('#PR_first_name_1');
+    var lastName1 = $('#PR_last_name_1');
+    var emailAddress1 = $('#PR_email_1');
+    var backgroundInfo1 = $( "textarea[name|='PR_background_info_1']" );
 
-    checkInputStatus();
+    var firstName2 = $('#PR_first_name_2');
+    var lastName2 = $('#PR_last_name_2');
+    var emailAddress2 = $('#PR_email_2');
+    var backgroundInfo2 = $( "textarea[name|='PR_background_info_2']" );
 
-    firstName.change(function(){
-        checkInputStatus();
+    requiredInputStatus();
+    submitButtonGateway();
+
+    $.each([firstName1, lastName1, emailAddress1, backgroundInfo1], function( index, item ){
+        item.change(function(){
+            requiredInputStatus();
+            submitButtonGateway();
+        });
     });
-    lastName.change(function(){
-        checkInputStatus();
-    });
-    emailAddress.change(function(){
-        checkInputStatus();
-    });
-    backgroundInfo.change(function(){
-        checkInputStatus();
+    $.each([firstName2, lastName2, emailAddress2, backgroundInfo2], function( index, item ){
+        item.change(function(){
+            optionalInputStatus();
+            submitButtonGateway();
+        });
     });
 
-    function checkInputStatus() {
-        if (firstName.val() !== '' && lastName.val() !== '' && emailAddress.val() !== '' && backgroundInfo.val() !== '') {
-            $('#publish').prop('disabled', false);
-        } else {
-            $('#publish').prop('disabled', true);
-        }
-        $.each([firstName, lastName, emailAddress, backgroundInfo], function(index, item){
+    function requiredInputStatus() {
+        $.each([firstName1, lastName1, emailAddress1, backgroundInfo1], function(index, item){
             if (item.val() === '') {
                 item.addClass('form-invalid');
             } else {
@@ -34,6 +35,57 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    function optionalInputStatus() {
+        $.each([firstName2, lastName2, emailAddress2, backgroundInfo2], function(index, item){
+            if (item.val() === '') {
+                item.addClass('form-invalid');
+            } else {
+                item.removeClass('form-invalid');
+            }
+        });
+        if ( allEmpty($('#peer_reviewer_2') ) ) {
+            $('#peer_reviewer_2').children('input, textarea').removeClass('form-invalid');
+        }
+    }
+
+    function submitButtonGateway() {
+
+        // If none are empty in 1 and all are empty in 2
+        if ( !anyEmpty( $('#peer_reviewer_1') ) && allEmpty( $('#peer_reviewer_2') ) ) {
+            $('#publish').prop('disabled', false);
+        }
+        // If none are empty in 1 or 2
+        else if ( !anyEmpty( $('#peer_reviewer_1') ) && !anyEmpty( $('#peer_reviewer_2') ) ) {
+            $('#publish').prop('disabled', false);
+        } else {
+            $('#publish').prop('disabled', true);
+        }
+
+    }
+
+
+    // HELPER FUNCTIONS
+
+    function allEmpty( parent ) {
+        var obj = '';
+        parent.children('input, textarea').each(function() {
+            obj += $(this).val();
+        });
+        return(obj === '');
+    }
+
+    function anyEmpty( parent ) {
+        var obj = false;
+        parent.children('input, textarea').each(function() {
+            if ( $(this).val() === '' ) {
+                obj = true;
+            }
+        });
+        return obj;
+    }
+
+
 
 
     /**
@@ -58,6 +110,21 @@ jQuery(document).ready(function($) {
              $('#coauthor_' + clickIterator + '_div').show();
              $('#add_coauthor').prop('disabled', true);
          }
+
+     });
+
+     // Toggle button handler
+     if ( $('#PR_first_name_2').val() === '' ) {
+         $('#peer_reviewer_2').hide();
+     } else {
+          $("button[name|='toggle_second_reviewer']").hide();
+     }
+
+
+     $("button[name|='toggle_second_reviewer']").click(function(event) {
+
+        $(this).hide();
+        $('#peer_reviewer_2').show();
 
      });
 
