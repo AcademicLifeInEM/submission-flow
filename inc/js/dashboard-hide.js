@@ -21,9 +21,10 @@ jQuery(document).ready(function($) {
     $('#featured-image-3_page').hide();
     $('#featured-image-4_page').hide();
     $('#featured-image-5_page').hide();
-    $('.misc-pub-section misc-yoast').hide();
-    $('.misc-pub-section misc-pub-visibility').hide();
+    $('#misc-publishing-actions > div.misc-pub-section.misc-yoast.misc-pub-section-last').hide();
+    $('#visibility').hide();
     $('#titlediv > .inside').hide();
+
 
     /**
      * EXPLICIT SHOWS
