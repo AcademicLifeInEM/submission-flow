@@ -23,6 +23,7 @@ jQuery(document).ready(function($) {
     $('#featured-image-5_page').hide();
     $('.misc-pub-section misc-yoast').hide();
     $('.misc-pub-section misc-pub-visibility').hide();
+    $('#titlediv > .inside').hide();
 
     /**
      * EXPLICIT SHOWS
