@@ -4,7 +4,7 @@
  *	Plugin Name: ALiEM Submission Flow
  *	Plugin URI: null
  *	Description: Internal plugin to enhance new submission flow
- *	Version: 0.1.0
+ *	Version: 0.1.1
  *	Author: Derek P Sifford
  *	Author URI: http://www.twitter.com/flightmed1
  *	License: GPL3
@@ -24,8 +24,9 @@
  * 1) CO-AUTHORS PLUS:
  *    - COMMENT OUT LINES 1041-1049. (version: 3.1.1)
  * 2) FANCIEST AUTHOR BOX: (/includes/ts-fab-user-settings.php)
- *    - LINE 21: DELETE UP TO '?>'
- *    - LINE 137: DELETE '}'
+ *    - LINE 21: Comment out whole line
+ *    - LINE 137: Comment out whole line ('<?php } // end if ?>')
+ * 3) DEPENDENCY: TablePress -- Table with the title 'Staging Area: Blog Posts in Progress'
  */
 
 ////////////////////
@@ -163,7 +164,7 @@ function add_peer_reviewer_meta_box( $post ) {
     }
 
 
-    require('/inc/meta-peer-reviewer-info.php');
+    require( 'inc/meta-peer-reviewer-info.php' );
 
 }
 
@@ -186,7 +187,7 @@ function add_coauthor_meta_box( $post ) {
 
     }
 
-    require('/inc/meta-coauthors.php');
+    require( 'inc/meta-coauthors.php' );
 
 }
 
@@ -341,7 +342,7 @@ function display_meta_for_copyeditors() {
     }
 
 }
-add_action( 'admin_head', 'display_meta_for_copyeditors' );
+add_action( 'add_meta_boxes', 'display_meta_for_copyeditors' );
 
 /**
  * END META BOX FUNCTIONS
