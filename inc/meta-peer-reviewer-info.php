@@ -5,7 +5,7 @@
     <input type="text" id="PR_last_name_1" name="PR_last_name_1" class="large-text" value="<?php echo(esc_attr( $PR_last_name_1 )); ?>" /><br>
     <label for="PR_email_1">Email Address</label><br>
     <input type="text" id="PR_email_1" name="PR_email_1" class="large-text" value="<?php echo(esc_attr( $PR_email_1 )); ?>" /><br>
-    <label for="PR_background_info_1">Background Information</label><br>
+    <label for="PR_background_info_1" id="email_label1">Background Information</label><br>
     <textarea name="PR_background_info_1" class="large-text" style="resize: vertical;"><?php echo(esc_attr( $PR_background_info_1 )); ?></textarea><br>
 </div>
 <button type="button" name="toggle_second_reviewer" style="width: 100%;">Add Second Reviewer</button>
@@ -17,6 +17,6 @@
     <input type="text" id="PR_last_name_2" name="PR_last_name_2" class="large-text" value="<?php echo(esc_attr( $PR_last_name_2 )); ?>" /><br>
     <label for="PR_email_2">Email Address</label><br>
     <input type="text" id="PR_email_2" name="PR_email_2" class="large-text" value="<?php echo(esc_attr( $PR_email_2 )); ?>" /><br>
-    <label for="PR_background_info_2">Background Information</label><br>
+    <label for="PR_background_info_2" id="email_label2">Background Information</label><br>
     <textarea name="PR_background_info_2" class="large-text" style="resize: vertical;"><?php echo(esc_attr( $PR_background_info_2 )); ?></textarea><br>
 </div>

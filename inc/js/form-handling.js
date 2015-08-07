@@ -22,12 +22,14 @@ jQuery(document).ready(function($) {
         item.change(function(){
             requiredInputStatus();
             submitButtonGateway();
+            emailCheck();
         });
     });
     $.each([firstName2, lastName2, emailAddress2, backgroundInfo2], function( index, item ){
         item.change(function(){
             optionalInputStatus();
             submitButtonGateway();
+            emailCheck();
         });
     });
 
@@ -69,6 +71,37 @@ jQuery(document).ready(function($) {
 
     }
 
+    function emailCheck() {
+
+        if ( emailAddress1.val() !== '' ) {
+            if ( !IsEmail(emailAddress1.val()) ) {
+                if ( !$('#invalid-email1').length ) {
+                    $('#email_label1').prepend(' <p id="invalid-email1" style="color: red; text-align: center; font-weight: 600; padding:0px; margin: 0px;">**Email Address Invalid**</p>');
+                }
+                emailAddress1.addClass('form-invalid');
+                $('#publish').prop('disabled', true);
+            } else {
+                $('#invalid-email1').remove();
+                emailAddress1.removeClass('form-invalid');
+                submitButtonGateway();
+            }
+        }
+
+        if ( emailAddress2.val() !== '' ) {
+            if ( !IsEmail(emailAddress2.val()) ) {
+                if ( !$('#invalid-email2').length ) {
+                    $('#email_label2').prepend(' <p id="invalid-email2" style="color: red; text-align: center; font-weight: 600; padding:0px; margin: 0px;">**Email Address Invalid**</p>');
+                }
+                emailAddress2.addClass('form-invalid');
+                $('#publish').prop('disabled', true);
+            } else {
+                $('#invalid-email2').remove();
+                emailAddress2.removeClass('form-invalid');
+                submitButtonGateway();
+            }
+        }
+
+    }
 
     // HELPER FUNCTIONS
 
@@ -90,6 +123,10 @@ jQuery(document).ready(function($) {
         return obj;
     }
 
+    function IsEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
 
 
 
