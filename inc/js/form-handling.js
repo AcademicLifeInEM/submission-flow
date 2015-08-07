@@ -10,6 +10,11 @@ jQuery(document).ready(function($) {
     var emailAddress2 = $('#PR_email_2');
     var backgroundInfo2 = $( "textarea[name|='PR_background_info_2']" );
 
+    var coauthorBg1 = $('textarea[name|="coauthor_1_background"]');
+    var coauthorBg2 = $('textarea[name|="coauthor_2_background"]');
+    var coauthorBg3 = $('textarea[name|="coauthor_3_background"]');
+    var coauthorBg4 = $('textarea[name|="coauthor_4_background"]');
+
     requiredInputStatus();
     submitButtonGateway();
 
@@ -92,39 +97,38 @@ jQuery(document).ready(function($) {
      * FUNCTIONS TO HANDLE COAUTHOR META BOX FIELDS
      */
 
-     // If the 2nd through 4th fields are blank, hide them on load
-     $.each([$('#coauthor_2_first_name'), $('#coauthor_3_first_name'), $('#coauthor_4_first_name')], function(index, value){
-         if (value.val() === '') {
-             value.parent().hide();
+     $.each([coauthor_2_first_name, coauthor_2_first_name, coauthor_2_first_name], function() {
+         if ( $(this).val() !== '' ) {
+             $(this).parent().removeClass('js-hide');
          }
      });
+
 
      var clickIterator = 2;
 
      $('.inside').on('click', '#add_coauthor', function(){
 
          if (clickIterator < 4) {
-             $('#coauthor_' + clickIterator + '_div').show();
+             $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
              clickIterator++;
          } else if (clickIterator == 4) {
-             $('#coauthor_' + clickIterator + '_div').show();
+             $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
              $('#add_coauthor').prop('disabled', true);
          }
 
      });
 
      // Toggle button handler
-     if ( $('#PR_first_name_2').val() === '' ) {
-         $('#peer_reviewer_2').hide();
-     } else {
-          $("button[name|='toggle_second_reviewer']").hide();
+     if ( $('#PR_first_name_2').val() !== '' ) {
+         $('#peer_reviewer_2').removeClass('js-hide');
+         $("button[name|='toggle_second_reviewer']").addClass('js-hide');
      }
 
 
      $("button[name|='toggle_second_reviewer']").click(function(event) {
 
         $(this).hide();
-        $('#peer_reviewer_2').show();
+        $('#peer_reviewer_2').removeClass('js-hide');
 
      });
 

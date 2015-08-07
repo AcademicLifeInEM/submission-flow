@@ -43,6 +43,9 @@ $copyeditor_email_list = array( 'copyeditor1@maildrop.cc', 'copyeditor2@maildrop
 // Enqueue Javascript
 function enqueue_plugin_scripts() {
 
+    wp_register_style( 'submission-flow-css', plugins_url( 'inc/submission-flow.css', __FILE__ ) );
+    wp_enqueue_style( 'submission-flow-css' );
+
     if ( current_user_can( 'subscriber' ) ) {
         /** Register scripts */
         wp_register_script('dashboard-hide', plugins_url( 'inc/js/dashboard-hide.js', __FILE__ ), array( 'jquery' ) );
@@ -69,6 +72,14 @@ function enqueue_plugin_scripts() {
 
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_plugin_scripts' );
+
+function enqueue_plugin_frontend_scripts() {
+    if ( current_user_can( 'subscriber' ) ) {
+        wp_register_script('frontend-hide', plugins_url( 'inc/js/frontend-hide.js', __FILE__ ), array( 'jquery' ) );
+        wp_enqueue_script( 'frontend-hide' );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'enqueue_plugin_frontend_scripts' );
 
 
 // CUSTOMIZE CAPABILITIES FOR SUBSCRIBERS
@@ -182,7 +193,6 @@ function add_coauthor_meta_box( $post ) {
 /**
  * SAVE META BOX FIELDS TO DATABASE
  */
-// TODO: ADD ANOTHER PEER_REVIEWER
 // Peer review info meta box
 function save_peer_review_info_meta( $post_id ) {
 
@@ -236,7 +246,7 @@ function save_coauthor_details_meta( $post_id ) {
                 update_post_meta( $post_id, 'coauthor_' . $i . '_last_name',  $_POST['coauthor_' . $i . '_last_name'] );
                 update_post_meta( $post_id, 'coauthor_' . $i . '_email',  $_POST['coauthor_' . $i . '_email'] );
                 update_post_meta( $post_id, 'coauthor_' . $i . '_twitter',  $_POST['coauthor_' . $i . '_twitter'] );
-                update_post_meta( $post_id, 'coauthor_' . $i . '_background',  $_POST['coauthor_' . $i . '_background'] );
+                update_post_meta( $post_id, 'coauthor_' . $i . '_background',  wpautop( $_POST['coauthor_' . $i . '_background'] ) );
 
             }
 
@@ -245,14 +255,21 @@ function save_coauthor_details_meta( $post_id ) {
             ///////////////////////////////////////
 
             $username = ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . '.' . preg_replace('/\s+/', '.', ucwords( $_POST['coauthor_' . $i . '_last_name'] ) );
+// TODO: if the user exists, update him/her with new background info, etc (also consider adding <br>)
 
-            // IF USER DOES NOT ALREADY EXIST... CREATE NEW USER
+            /**
+             * IF  : the user does not already exist, then create a new user
+             * ELSE: update the existing user with the information provided
+             */
+
             if ( get_user_by( 'email', strtolower( $_POST['coauthor_' . $i . '_email'] ) ) == '' && get_user_by( 'login', $username ) == '' ) {
 
                 // Corrects error where a user with the login '.' would be created
+                // FIXME:
                 if ($username == '.') {
                     break;
                 }
+
                 $userdata = array(
                     'user_pass' => 'ALiEMSubmissionUser',
                     'user_login' => $username,
@@ -267,6 +284,17 @@ function save_coauthor_details_meta( $post_id ) {
                 $new_user_id = wp_insert_user( $userdata );
                 update_user_meta( $new_user_id, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
 
+            } else {
+
+                $the_existing_user = get_user_by( 'email', strtolower( $_POST['coauthor_' . $i . '_email'] ) );
+
+                $userdata = array(
+                    'ID' => $the_existing_user->ID,
+                    'user_login' => $username,
+                    'description' => $_POST['coauthor_' . $i . '_background'],
+                );
+                wp_update_user( $userdata );
+                update_user_meta( $the_existing_user->ID, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
             }
         }
     }
@@ -330,13 +358,25 @@ function send_email_to_copyeditor( $post ) {
 
         global $copyeditor_email_list, $submission_editor_email;
 
-        // Set parent page to 'New Submission'
+        // SET PARENT PAGE TO 'New Submission'
         $submission_page = get_page_by_title( 'New Submission' );
         $updated_post = array(
             'ID' => $post->ID,
             'post_parent' => $submission_page->ID,
         );
         wp_update_post( $updated_post );
+
+
+        // ADD ROW TO TABLEPRESS TABLE
+        $post_custom = get_post_custom( $post->ID );
+        $first_author = get_user_by( 'id', $post->post_author );
+        $authors = $first_author->first_name . ' ' . $first_author->last_name;
+        $authors .= isset( $post_custom['coauthor_1_first_name'] ) ? ', ' . $post_custom['coauthor_1_first_name'][0] . ' ' . $post_custom['coauthor_1_last_name'][0] : '';
+        $authors .= isset( $post_custom['coauthor_2_first_name'] ) ? ', ' . $post_custom['coauthor_2_first_name'][0] . ' ' . $post_custom['coauthor_2_last_name'][0] : '';
+        $authors .= isset( $post_custom['coauthor_3_first_name'] ) ? ', ' . $post_custom['coauthor_3_first_name'][0] . ' ' . $post_custom['coauthor_3_last_name'][0] : '';
+        $authors .= isset( $post_custom['coauthor_4_first_name'] ) ? ', ' . $post_custom['coauthor_4_first_name'][0] . ' ' . $post_custom['coauthor_4_last_name'][0] : '';
+        tablepress_add( $authors, $post->post_title );
+
 
         // Is 'copyeditor_rotation' defined yet in the database? If not, start at 0
         if ( get_option('copyeditor_rotation') == false ) {
@@ -388,14 +428,19 @@ function send_email_to_peer_reviewer() {
 
         $post_meta = get_post_custom( $post->ID );
 
-        $PR_first_name = $post_meta['PR_first_name'][0];
-        $PR_last_name = $post_meta['PR_last_name'][0];
-        $PR_email = $post_meta['PR_email'][0];
-        $PR_background_info = $post_meta['PR_background_info'][0];
+        $PR_first_name_1 = $post_meta['PR_first_name_1'][0];
+        $PR_last_name_1 = $post_meta['PR_last_name_1'][0];
+        $PR_email_1 = $post_meta['PR_email_1'][0];
+        $PR_background_info_1 = $post_meta['PR_background_info_1'][0];
+
+        $PR_first_name_2 = $post_meta['PR_first_name_2'][0];
+        $PR_last_name_2 = $post_meta['PR_last_name_2'][0];
+        $PR_email_2 = $post_meta['PR_email_2'][0];
+        $PR_background_info_2 = $post_meta['PR_background_info_2'][0];
 
 // TODO: UPDATE EMAIL MESSAGE FOR EXPERT REVIEWER (DISCUSS W/ FELLOWS)
 
-        if ($PR_email !== '') {
+        if ($PR_email_1 !== '') {
 
             $user_info = get_userdata($post->post_author);
     		$subject = 'New Submission: ' . $user_info->user_nicename . ' submitted a post';
@@ -404,9 +449,21 @@ function send_email_to_peer_reviewer() {
                 'From: ALiEM <submission@aliem.com>;',
                 'Cc: ' . $submission_editor_email,
             );
-            wp_mail( $PR_email, $subject, $message, $headers );
+            wp_mail( $PR_email_1, $subject, $message, $headers );
 
         }
+
+        if ($PR_email_2 !== '') {
+
+    		$message = 'A post "' . $post->post_title . '" by ' . $user_info->user_nicename . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
+            $headers = array(
+                'From: ALiEM <submission@aliem.com>;',
+                'Cc: ' . $submission_editor_email,
+            );
+            wp_mail( $PR_email_2, $subject, $message, $headers );
+
+        }
+
     }
 }
 add_action( 'pending_to_publish', 'send_email_to_peer_reviewer' );
@@ -421,7 +478,7 @@ function finalize_submission( $post ) {
     $submission_page = get_page_by_title( 'New Submission' );
     $parent_page = $post->post_parent;
 
-    if ( $parent_page == $submission_page->ID ) {
+    if ( $parent_page == $submission_page->ID && !user_can( 'subscriber' ) ) {
 
         $page_to_post = $post;
         $page_to_post->post_type = 'post';
@@ -430,6 +487,49 @@ function finalize_submission( $post ) {
 
 }
 add_action('publish_to_draft', 'finalize_submission');
+
+
+/**
+ * HELPER FUNCTIONS
+ */
+function parse_html_chars( $input ) {
+    $output = preg_replace( "/<p>/", "", $input );
+    $output = preg_replace( "/<br \\/>/", "\r", $output );
+    $output = preg_replace( "/<\\/p>/", "\n", $output );
+    return( trim( $output ) );
+}
+
+
+// ADD ROW TO TABLEPRESS SPREADSHEET
+function tablepress_add( $author, $title ) {
+
+    global $wpdb;
+
+    $posttitle = 'Staging Area: Blog Posts in Progress';
+    $postid = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $posttitle . "'" );
+
+    $tablepress = get_post( $postid );
+    $tabledata = json_decode( $tablepress->post_content );
+
+    $date_today = date('m/d/Y');
+
+    $new_row = array(
+        $date_today,
+        $author,
+        $title,
+    );
+
+    array_push( $tabledata, $new_row );
+
+    $tabledata = json_encode( $tabledata );
+
+    $updated_post = array(
+        'ID' => $postid,
+        'post_content' => $tabledata
+    );
+    wp_update_post( $updated_post );
+
+}
 
 
 ?>

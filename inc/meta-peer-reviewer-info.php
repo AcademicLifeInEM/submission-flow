@@ -8,8 +8,8 @@
     <label for="PR_background_info_1">Background Information</label><br>
     <textarea name="PR_background_info_1" class="large-text" style="resize: vertical;"><?php echo(esc_attr( $PR_background_info_1 )); ?></textarea><br>
 </div>
-<button type="button" name="toggle_second_reviewer" class="button-secondary" style="width: 100%;">Add Second Reviewer</button>
-<div id="peer_reviewer_2">
+<button type="button" name="toggle_second_reviewer" style="width: 100%;">Add Second Reviewer</button>
+<div id="peer_reviewer_2" class="js-hide">
     <hr>
     <label for="PR_first_name_2">First Name</label><br>
     <input type="text" id="PR_first_name_2" name="PR_first_name_2" class="large-text" value="<?php echo(esc_attr( $PR_first_name_2 )); ?>" /><br>
