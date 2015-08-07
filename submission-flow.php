@@ -361,9 +361,14 @@ function send_email_to_copyeditor( $post ) {
 
         // SET PARENT PAGE TO 'New Submission'
         $submission_page = get_page_by_title( 'New Submission' );
+
+        // Add title and "draft" image to content
+        $updated_content = '<img class="aligncenter size-full wp-image-16521" src="http://www.aliem.com/wp-content/uploads/Draft.jpg" alt="Draft" width="400" height="116" /><h1>' . $post->post_title . '</h1>' . $post->post_content;
+
         $updated_post = array(
             'ID' => $post->ID,
             'post_parent' => $submission_page->ID,
+            'post_content' => $updated_content,
         );
         wp_update_post( $updated_post );
 
