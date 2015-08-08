@@ -397,7 +397,7 @@ function send_email_to_copyeditor( $post ) {
 
         // Set headers, subject, and message for email
         $headers = array(
-            'From: ALiEM <submission@aliem.com>;',
+            'From: ALiEM Team <submission@aliem.com>',
             'Cc: ' . $submission_editor_email,
         );
         $subject = 'New Submission: ' . $post->post_title;
@@ -448,11 +448,26 @@ function send_email_to_peer_reviewer() {
         if ($PR_email_1 !== '') {
 
             $user_info = get_userdata($post->post_author);
-    		$subject = 'New Submission: ' . $user_info->user_nicename . ' submitted a post';
-    		$message = 'A post "' . $post->post_title . '" by ' . $user_info->user_nicename . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
+    		$subject = 'ALiEM Expert Peer Review Request';
+    		$message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
+                    "<div style='font-size: 18px;'><p>Greetings! It is our understanding that " . $user_info->first_name . " " .
+                    $user_info->last_name . " spoke with you about being the Expert Peer Reviewer " .
+                    "for his/her guest submission to ALiEM. We are very grateful for your participation.</p>" .
+                    "<p>The draft for review can be found here: <a href='" . $post->guid . "'>" . $post->post_title . "</a>.</p>" .
+                    "Please provide your peer review comments in the Disqus feed below the blog post. " .
+                    "<p>Because we intend on appending your review to the published post, please provide your comments " .
+                    "in a polished, academic format.</p>" .
+                    "<p>If you run into any trouble or would like further clarification regarding our submission process, " .
+                    "please feel free to contact our Submission Editor at any time. You'll find his email address cc'ed to this message.</p>" .
+                    "<p>We look forward to your input! Thank you again for your time.</p>" .
+                    "<p>Kind regards,<br>" .
+                    "The ALiEM Team</p></div>";
+
             $headers = array(
-                'From: ALiEM <submission@aliem.com>;',
+                'From: ALiEM Team <submission@aliem.com>',
                 'Cc: ' . $submission_editor_email,
+                'Content-Type: text/html',
+                'charset=UTF-8',
             );
             wp_mail( $PR_email_1, $subject, $message, $headers );
 
@@ -460,11 +475,6 @@ function send_email_to_peer_reviewer() {
 
         if ($PR_email_2 !== '') {
 
-    		$message = 'A post "' . $post->post_title . '" by ' . $user_info->user_nicename . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
-            $headers = array(
-                'From: ALiEM <submission@aliem.com>;',
-                'Cc: ' . $submission_editor_email,
-            );
             wp_mail( $PR_email_2, $subject, $message, $headers );
 
         }
