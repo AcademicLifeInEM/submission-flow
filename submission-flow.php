@@ -488,9 +488,9 @@ function send_email_to_copyeditor( $post ) {
 
         $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
                    "<div style='font-size: 18px;'>" .
-                   "<p>Hi " . $copyeditor_first_name . "!</p>" .
-                   "<p>A post <a href='" . $post->guid . "'>" . $post->post_title .
-                   "</a> has been submitted for review by " . $submitter_name . ".</p>" .
+                   "<p>Hi " . $copyeditor_first_name[1] . "!</p>" .
+                   "<p>A submission titled \"<a href='" . $post->guid . "'>" . $post->post_title .
+                   "</a>\" has been submitted for review by " . $submitter_name . ".</p>" .
                    "<p>Please copyedit at your earliest convienience.</p></div>";
 
         // Send the email
