@@ -29,7 +29,7 @@
  * 3) DEPENDENCY: TablePress -- Table with the title 'Staging Area: Blog Posts in Progress'
  */
 
-// TODO: Add email message to submitter (confirmation)
+// TODO: Add email message to authors -- copyedit completed.
 
 ////////////////////
 // PLUGIN GLOBALS //
@@ -437,12 +437,11 @@ function send_email_to_copyeditor( $post ) {
 
         global $copyeditor_email_list, $submission_editor_email;
 
-        // SET PARENT PAGE TO 'New Submission'
+        // SET PARENT PAGE
         $submission_page = get_page_by_title( 'New Submission' );
 
-        // Add title and "draft" image to content
+        // ADD TITLE AND DRAFT IMAGE TO TOP OF DRAFT
         $updated_content = '<img class="aligncenter size-full wp-image-16521" src="http://www.aliem.com/wp-content/uploads/Draft.jpg" alt="Draft" width="400" height="116" /><h1>' . $post->post_title . '</h1>' . $post->post_content;
-
         $updated_post = array(
             'ID' => $post->ID,
             'post_parent' => $submission_page->ID,
@@ -461,6 +460,9 @@ function send_email_to_copyeditor( $post ) {
         $authors .= isset( $post_custom['coauthor_4_first_name'] ) ? ', ' . $post_custom['coauthor_4_first_name'][0] . ' ' . $post_custom['coauthor_4_last_name'][0] : '';
         tablepress_add( $authors, $post->post_title );
 
+        //////////////////////////////////
+        // PREPARE VARIABLES FOR EMAILS //
+        //////////////////////////////////
 
         // Is 'copyeditor_rotation' defined yet in the database? If not, start at 0
         if ( get_option('copyeditor_rotation') == false ) {
@@ -474,16 +476,55 @@ function send_email_to_copyeditor( $post ) {
 		$user_info = get_userdata($post->post_author);
         $submitter_name = ( $user_info->display_name == '' ? $user_info->nicename : $user_info->display_name );
 
-        // Set headers, subject, and message for email
+        /////////////////////////////////////////
+        // PREPARE AND SEND CONFIRMATION EMAIL //
+        /////////////////////////////////////////
+
+        /**
+         * Set the recipients to an array of all the authors listed.
+         * After, if the array value is empty, remove it.
+         */
+        $recipients = array(
+            $user_info->user_email,
+            $post_custom['coauthor_1_email'][0],
+            $post_custom['coauthor_2_email'][0],
+            $post_custom['coauthor_3_email'][0],
+            $post_custom['coauthor_4_email'][0],
+        );
+        foreach($recipients as $key => $value) {
+        	if($value == '' || $value === 'undefined') {
+            	unset($recipients[$key]);
+            }
+		}
+
         $headers = array(
             'From: ALiEM Team <submission@aliem.com>',
             'Cc: ' . $submission_editor_email,
             'Content-Type: text/html',
             'charset=UTF-8',
         );
-        $subject = 'ALiEM Copyedit Request: "' . $post->post_title . '"';
-// TODO: FINALIZE EMAIL MESSAGE
+        $subject = 'Submission Received: "' . $post->post_title . '"';
+        $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
+                   "<div style='font-size: 18px;'>" .
+                   "<p>Thank you for your interest in posting content to ALiEM!</p>" .
+                   "<p>Your copyeditor, " . $copyeditor_email_list[$which_copyeditor]['name'] . ", has been notified and will begin" .
+                   "proofing shortly. Once the proofing has been completed, you will be notified via email. " .
+                   "At that time, we will also notify your selected Expert Peer Reviewer(s) that the draft is ready for their review. " .
+                   "As a reminder, we assume that you have already spoken with your selected reviewers and they have agreed to participate.</p>" .
+                   "<p>If you have any questions, please feel free to contact your copyeditor or our Submission Editor via email at any time. " .
+                   "For convienience, their contact information is listed below.</p>" .
+                   "<ul><li><strong>Copyeditor</strong>: " . $copyeditor_email_list[$which_copyeditor]['name'] . ", " . $copyeditor_email_list[$which_copyeditor]['email'] . "</li>" .
+                   "<li><strong>Submission Editor</strong>: Derek Sifford, submission@aliem.com</li></ul>" .
+                   "<p>Thank you again for your interest. We look forward to working with you!</p>" .
+                   "<p>Kind regards,<br>The ALiEM Team</p>";
+        wp_mail( $recipients, $subject, $message, $headers );
 
+        ///////////////////////////////////////
+        // PREPARE AND SEND COPYEDITOR EMAIL //
+        ///////////////////////////////////////
+
+        $subject = 'ALiEM Copyedit Request: "' . $post->post_title . '"';
+        // Regex - Extract Copyeditor's first name
         preg_match( "/(?:\\w+. )(\\w+)/", $copyeditor_email_list[$which_copyeditor]['name'], $copyeditor_first_name );
 
         $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
@@ -493,10 +534,12 @@ function send_email_to_copyeditor( $post ) {
                    "</a>\" has been submitted for review by " . $submitter_name . ".</p>" .
                    "<p>Please copyedit at your earliest convienience.</p></div>";
 
-        // Send the email
         wp_mail( $copyeditor_email_list[$which_copyeditor]['email'], $subject, $message, $headers );
 
-        // If the copyeditor rotation is not at the end, increment by 1. Otherwise, set back to 0.
+        ///////////////////////////////////
+        // INCREMENT COPYEDITOR ROTATION //
+        ///////////////////////////////////
+
         if ( $which_copyeditor < count($copyeditor_email_list) - 1 ) {
             $which_copyeditor++;
             update_option( 'copyeditor_rotation', $which_copyeditor );
@@ -531,8 +574,6 @@ function send_email_to_peer_reviewer() {
         $PR_last_name_2 = $post_meta['PR_last_name_2'][0];
         $PR_email_2 = $post_meta['PR_email_2'][0];
         $PR_background_info_2 = $post_meta['PR_background_info_2'][0];
-
-// TODO: UPDATE EMAIL MESSAGE FOR EXPERT REVIEWER (DISCUSS W/ FELLOWS)
 
         if ($PR_email_1 !== '') {
 
