@@ -40,7 +40,84 @@
  */
 
 $submission_editor_email = 'dereksifford@gmail.com';
-$copyeditor_email_list = array( 'copyeditor1@maildrop.cc', 'copyeditor2@maildrop.cc', 'copyeditor3@maildrop.cc' );
+// Testing purposes
+$copyeditor_email_list = array(
+                            [
+                                'name'  => 'Dr. Bryan Hayes',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Teresa Chan',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Howie Mell',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Nikita Joshi',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Sameed Shaikh',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Matt Zuckerman',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Michelle Lin',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Matthew Klein',
+                                'email' => 'dereksifford@gmail.com',
+                            ],
+                            [
+                                'name'  => 'Dr. Alissa Mussell',
+                                'email' => 'dereksifford@gmail.com',
+                            ]
+                        );
+
+// $copyeditor_email_list = array(
+//                             [
+//                                 'name'  => 'Dr. Bryan Hayes',
+//                                 'email' => 'bryanhayes13@gmail.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Teresa Chan',
+//                                 'email' => 'teresamchan@gmail.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Howie Mell',
+//                                 'email' => 'howie.mell@gmail.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Nikita Joshi',
+//                                 'email' => 'njoshi@aliem.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Sameed Shaikh',
+//                                 'email' => 'samshaikh@gmail.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Matt Zuckerman',
+//                                 'email' => 'mzuckerm@gmail.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Michelle Lin',
+//                                 'email' => 'mlin@aliem.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Matthew Klein',
+//                                 'email' => 'matthew.richard.klein@gmail.com',
+//                             ],
+//                             [
+//                                 'name'  => 'Dr. Alissa Mussell',
+//                                 'email' => 'r.alissa.mussell@gmail.com',
+//                             ]
+//                         );
 
 
 // Enqueue Javascript
@@ -401,13 +478,23 @@ function send_email_to_copyeditor( $post ) {
         $headers = array(
             'From: ALiEM Team <submission@aliem.com>',
             'Cc: ' . $submission_editor_email,
+            'Content-Type: text/html',
+            'charset=UTF-8',
         );
-        $subject = 'New Submission: ' . $post->post_title;
+        $subject = 'ALiEM Copyedit Request: "' . $post->post_title . '"';
 // TODO: FINALIZE EMAIL MESSAGE
-        $message = 'A post "' . $post->post_title . '" by ' . $submitter_name . ' was submitted for review at ' . wp_get_shortlink ($post->ID) . '&preview=true. Please proof.';
+
+        preg_match( "/(?:\\w+. )(\\w+)/", $copyeditor_email_list[$which_copyeditor]['name'], $copyeditor_first_name );
+
+        $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
+                   "<div style='font-size: 18px;'>" .
+                   "<p>Hi " . $copyeditor_first_name . "!</p>" .
+                   "<p>A post <a href='" . $post->guid . "'>" . $post->post_title .
+                   "</a> has been submitted for review by " . $submitter_name . ".</p>" .
+                   "<p>Please copyedit at your earliest convienience.</p></div>";
 
         // Send the email
-        wp_mail( $copyeditor_email_list[$which_copyeditor], $subject, $message, $headers );
+        wp_mail( $copyeditor_email_list[$which_copyeditor]['email'], $subject, $message, $headers );
 
         // If the copyeditor rotation is not at the end, increment by 1. Otherwise, set back to 0.
         if ( $which_copyeditor < count($copyeditor_email_list) - 1 ) {
