@@ -547,7 +547,7 @@ function draft_submitted_by_author( $post ) {
 
         wp_redirect( admin_url() );
         exit();
-        
+
 	}
 
 }
@@ -665,6 +665,19 @@ function finalize_submission( $post ) {
 
 }
 add_action('publish_to_draft', 'finalize_submission');
+
+// SHOW PEER REVIEWER METABOX ON POSTS THAT HAVE THE META
+function display_peer_reviewer_meta( $post ) {
+
+    $post_meta = get_post_custom( $post->ID );
+    $PR1_first_name = $post_meta['PR_first_name_1'][0];
+
+    if ( $PR1_first_name !== '' ) {
+        add_meta_box( 'peer_reviewer_meta_box', 'Expert Peer Reviewer Information', 'add_peer_reviewer_meta_box', 'page', 'side', 'high' );
+    }
+
+}
+add_action( 'admin_head', 'display_peer_reviewer_meta' );
 
 
 /**
