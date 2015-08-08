@@ -545,6 +545,9 @@ function draft_submitted_by_author( $post ) {
             update_option( 'copyeditor_rotation', 0 );
         }
 
+        wp_redirect( admin_url() );
+        exit();
+        
 	}
 
 }
