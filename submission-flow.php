@@ -429,7 +429,7 @@ add_action( 'add_meta_boxes', 'display_meta_for_copyeditors' );
  * BEGIN EMAIL FUNCTIONS
  */
 
-function send_email_to_copyeditor( $post ) {
+function draft_submitted_by_author( $post ) {
 
     if ( current_user_can('subscriber') ) {
 
@@ -548,10 +548,10 @@ function send_email_to_copyeditor( $post ) {
 	}
 
 }
-add_action( 'draft_to_pending', 'send_email_to_copyeditor' );
+add_action( 'draft_to_pending', 'draft_submitted_by_author' );
 
 
-function send_email_to_peer_reviewer() {
+function draft_published_by_copyeditor() {
 
     global $post, $submission_editor_email;
 
@@ -609,7 +609,7 @@ function send_email_to_peer_reviewer() {
 
     }
 }
-add_action( 'pending_to_publish', 'send_email_to_peer_reviewer' );
+add_action( 'pending_to_publish', 'draft_published_by_copyeditor' );
 
 /**
  * END EMAIL FUNCTIONS
