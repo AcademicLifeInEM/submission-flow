@@ -256,7 +256,6 @@ function save_coauthor_details_meta( $post_id ) {
             ///////////////////////////////////////
 
             $username = ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . '.' . preg_replace('/\s+/', '.', ucwords( $_POST['coauthor_' . $i . '_last_name'] ) );
-// TODO: if the user exists, update him/her with new background info, etc (also consider adding <br>)
 
             /**
              * IF  : the user does not already exist, then create a new user
