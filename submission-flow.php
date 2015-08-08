@@ -29,8 +29,6 @@
  * 3) DEPENDENCY: TablePress -- Table with the title 'Staging Area: Blog Posts in Progress'
  */
 
-// TODO: Add email message to authors -- copyedit completed.
-
 ////////////////////
 // PLUGIN GLOBALS //
 ////////////////////
