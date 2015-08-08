@@ -505,10 +505,10 @@ function draft_submitted_by_author( $post ) {
         $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
                    "<div style='font-size: 18px;'>" .
                    "<p>Thank you for your interest in posting content to ALiEM!</p>" .
-                   "<p>Your copyeditor, " . $copyeditor_email_list[$which_copyeditor]['name'] . ", has been notified and will begin" .
+                   "<p>Your copyeditor, " . $copyeditor_email_list[$which_copyeditor]['name'] . ", has been notified and will begin " .
                    "proofing shortly. Once the proofing has been completed, you will be notified via email. " .
                    "At that time, we will also notify your selected Expert Peer Reviewer(s) that the draft is ready for their review. " .
-                   "As a reminder, we assume that you have already spoken with your selected reviewers and they have agreed to participate.</p>" .
+                   "As a reminder, we assume that you have already spoken with your selected Expert Peer Reviewers and they have agreed to participate.</p>" .
                    "<p>If you have any questions, please feel free to contact your copyeditor or our Submission Editor via email at any time. " .
                    "For convienience, their contact information is listed below.</p>" .
                    "<ul><li><strong>Copyeditor</strong>: " . $copyeditor_email_list[$which_copyeditor]['name'] . ", " . $copyeditor_email_list[$which_copyeditor]['email'] . "</li>" .
@@ -561,42 +561,74 @@ function draft_published_by_copyeditor() {
 
     if ( $parent_page == $submission_page->ID ) {
 
+        // SET REQUIRED VARIABLES
         $post_meta = get_post_custom( $post->ID );
-
-        $PR_first_name_1 = $post_meta['PR_first_name_1'][0];
-        $PR_last_name_1 = $post_meta['PR_last_name_1'][0];
+        $user_info = get_userdata($post->post_author);
         $PR_email_1 = $post_meta['PR_email_1'][0];
-        $PR_background_info_1 = $post_meta['PR_background_info_1'][0];
-
-        $PR_first_name_2 = $post_meta['PR_first_name_2'][0];
-        $PR_last_name_2 = $post_meta['PR_last_name_2'][0];
         $PR_email_2 = $post_meta['PR_email_2'][0];
-        $PR_background_info_2 = $post_meta['PR_background_info_2'][0];
+
+        ///////////////////////////
+        // SEND EMAIL TO AUTHORS //
+        ///////////////////////////
+
+        /**
+         * Set the recipients to an array of all the authors listed.
+         * After, if the array value is empty, remove it.
+         */
+        $recipients = array(
+            $user_info->user_email,
+            $post_custom['coauthor_1_email'][0],
+            $post_custom['coauthor_2_email'][0],
+            $post_custom['coauthor_3_email'][0],
+            $post_custom['coauthor_4_email'][0],
+        );
+        foreach($recipients as $key => $value) {
+        	if($value == '' || $value === 'undefined') {
+            	unset($recipients[$key]);
+            }
+		}
+
+        // SET REQUIRED EMAIL VARIABLES
+        $headers = array(
+            'From: ALiEM Team <submission@aliem.com>',
+            'Cc: ' . $submission_editor_email,
+            'Content-Type: text/html',
+            'charset=UTF-8',
+        );
+        $subject = "Pending Expert Peer Review: " . $post->post_title;
+        $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
+                   "<div style='font-size: 18px;'>" .
+                   "<p>Greetings!,</p>" .
+                   "<p>This message is to inform you that your draft, <a href='" . $post->guid . "'>" . $post->post_title . "</a>, " .
+                   "has cleared the copyedit stage and has been sent to your reviewer(s) for peer review.</p>" .
+                   "<p>To receive notifications of any reviews or comments, please navigate to the " .
+                   "published draft page using the link above and 'star' the Disqus feed below the draft. " .
+                   "All further communication will take place via this comment feed.</p>" .
+                   "<p>Thank you again for your hard work! We look forward to working with you again in the future.</p>" .
+                   "<p>Kind regards,<br>The ALiEM Team</p>";
+        wp_mail( $recipients, $subject, $message, $headers );
+
+        /////////////////////////////
+        // SEND EMAIL TO REVIEWERS //
+        /////////////////////////////
 
         if ($PR_email_1 !== '') {
 
-            $user_info = get_userdata($post->post_author);
     		$subject = 'ALiEM Expert Peer Review Request';
     		$message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
-                    "<div style='font-size: 18px;'><p>Greetings! It is our understanding that " . $user_info->first_name . " " .
-                    $user_info->last_name . " spoke with you about being the Expert Peer Reviewer " .
-                    "for his/her guest submission to ALiEM. We are very grateful for your participation.</p>" .
-                    "<p>The draft for review can be found here: <a href='" . $post->guid . "'>" . $post->post_title . "</a>.</p>" .
-                    "Please provide your peer review comments in the Disqus feed below the blog post. " .
-                    "<p>Because we intend on appending your review to the published post, please provide your comments " .
-                    "in a polished, academic format.</p>" .
-                    "<p>If you run into any trouble or would like further clarification regarding our submission process, " .
-                    "please feel free to contact our Submission Editor at any time. You'll find his email address cc'ed to this message.</p>" .
-                    "<p>We look forward to your input! Thank you again for your time.</p>" .
-                    "<p>Kind regards,<br>" .
-                    "The ALiEM Team</p></div>";
+                        "<div style='font-size: 18px;'><p>Greetings! It is our understanding that " . $user_info->first_name . " " .
+                        $user_info->last_name . " spoke with you about being the Expert Peer Reviewer " .
+                        "for his/her guest submission to ALiEM. We are very grateful for your participation.</p>" .
+                        "<p>The draft for review can be found here: <a href='" . $post->guid . "'>" . $post->post_title . "</a>.</p>" .
+                        "Please provide your peer review comments in the Disqus feed below the blog post. " .
+                        "<p>Because we intend on appending your review to the published post, please provide your comments " .
+                        "in a polished, academic format.</p>" .
+                        "<p>If you run into any trouble or would like further clarification regarding our submission process, " .
+                        "please feel free to contact our Submission Editor at any time. You'll find his email address cc'ed to this message.</p>" .
+                        "<p>We look forward to your input! Thank you again for your time.</p>" .
+                        "<p>Kind regards,<br>" .
+                        "The ALiEM Team</p></div>";
 
-            $headers = array(
-                'From: ALiEM Team <submission@aliem.com>',
-                'Cc: ' . $submission_editor_email,
-                'Content-Type: text/html',
-                'charset=UTF-8',
-            );
             wp_mail( $PR_email_1, $subject, $message, $headers );
 
         }
