@@ -29,6 +29,10 @@
  * 3) DEPENDENCY: TablePress -- Table with the title 'Staging Area: Blog Posts in Progress'
  */
 
+// TODO: Add twitter fields for reviewers
+// TODO: Automatically move peer reivewer info to peer review box
+
+
 ////////////////////
 // PLUGIN GLOBALS //
 ////////////////////
@@ -236,6 +240,7 @@ function add_peer_reviewer_meta_box( $post ) {
         ${'PR_first_name_' . $i} = $values['PR_first_name_' . $i][0];
         ${'PR_last_name_' . $i} = $values['PR_last_name_' . $i][0];
         ${'PR_email_' . $i} = $values['PR_email_' . $i][0];
+        ${'PR_twitter_handle_' . $i} = $values['PR_twitter_handle_' . $i][0];
         ${'PR_background_info_' . $i} = $values['PR_background_info_' . $i][0];
 
     }
@@ -288,7 +293,9 @@ function save_peer_review_info_meta( $post_id ) {
         update_post_meta( $post_id, 'PR_last_name_1',  $_POST['PR_last_name_1'] );
         update_post_meta( $post_id, 'PR_email_1',  $_POST['PR_email_1'] );
         update_post_meta( $post_id, 'PR_background_info_1',  $_POST['PR_background_info_1'] );
-
+        if ( isset( $_POST['PR_twitter_handle_1']) ) {
+            update_post_meta( $post_id, 'PR_twitter_handle_1',  $_POST['PR_twitter_handle_1'] );
+        }
     }
 
     if ( isset( $_POST['PR_first_name_2']) ) {
@@ -297,7 +304,9 @@ function save_peer_review_info_meta( $post_id ) {
         update_post_meta( $post_id, 'PR_last_name_2',  $_POST['PR_last_name_2'] );
         update_post_meta( $post_id, 'PR_email_2',  $_POST['PR_email_2'] );
         update_post_meta( $post_id, 'PR_background_info_2',  $_POST['PR_background_info_2'] );
-
+        if ( isset( $_POST['PR_twitter_handle_2']) ) {
+            update_post_meta( $post_id, 'PR_twitter_handle_2',  $_POST['PR_twitter_handle_2'] );
+        }
     }
 
 }
@@ -398,6 +407,7 @@ function display_meta_for_copyeditors() {
             ${'PR_first_name_' . $i} = $post_meta['PR_first_name_' . $i][0];
             ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
             ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
+            ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
             ${'PR_background_info_' . $i} = $post_meta['PR_background_info_' . $i][0];
 
         }
@@ -658,6 +668,38 @@ function finalize_submission( $post ) {
 
     if ( $parent_page == $submission_page->ID && !user_can( 'subscriber' ) ) {
 
+        // COLLECT PEER REVIEWER INFO AND THEN SET IT AS PEER REVIEWER BOX POSTMETA
+        $post_meta = get_post_custom( $post->ID );
+
+        for ( $i = 1; $i < 3; $i++ ) {
+
+            ${'PR_first_name_' . $i} = $post_meta['PR_first_name_' . $i][0];
+            ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
+            ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
+            ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
+            ${'PR_background_info_' . $i} = $post_meta['PR_background_info_' . $i][0];
+
+        }
+
+        // UPDATE PEER REVIEWER BOX META VALUES FOR POST
+        update_post_meta( $post->ID, 'peer_review_box_heading_1', 'ALiEM Copyedit' );
+        update_post_meta( $post->ID, 'peer_review_box_heading_2', 'Expert Peer Review' );
+        update_post_meta( $post->ID, 'reviewer_name_2', $PR_first_name_1 . ' ' . $PR_last_name_1 );
+        update_post_meta( $post->ID, 'reviewer_twitter_2', $PR_twitter_handle_1 );
+        update_post_meta( $post->ID, 'reviewer_background_2', $PR_background_info_1 );
+        update_post_meta( $post->ID, 'reviewer_selector', '2' );
+
+        if ( $PR_first_name_2 !== '' ) {
+
+            update_post_meta( $post->ID, 'peer_review_box_heading_3', 'Expert Peer Review' );
+            update_post_meta( $post->ID, 'reviewer_name_3', $PR_first_name_2 . ' ' . $PR_last_name_2 );
+            update_post_meta( $post->ID, 'reviewer_twitter_3', $PR_twitter_handle_2 );
+            update_post_meta( $post->ID, 'reviewer_background_3', $PR_background_info_2 );
+            update_post_meta( $post->ID, 'reviewer_selector', '3' );
+
+        }
+
+
         $page_to_post = $post;
         $page_to_post->post_type = 'post';
         wp_update_post( $page_to_post );
@@ -665,19 +707,6 @@ function finalize_submission( $post ) {
 
 }
 add_action('publish_to_draft', 'finalize_submission');
-
-// SHOW PEER REVIEWER METABOX ON POSTS THAT HAVE THE META
-function display_peer_reviewer_meta( $post ) {
-
-    $post_meta = get_post_custom( $post->ID );
-    $PR1_first_name = $post_meta['PR_first_name_1'][0];
-
-    if ( $PR1_first_name !== '' & $post->post_type == 'post' ) {
-        add_meta_box( 'peer_reviewer_meta_box', 'Expert Peer Reviewer Information', 'add_peer_reviewer_meta_box', 'post', 'side', 'high' );
-    }
-
-}
-add_action( 'admin_head', 'display_peer_reviewer_meta' );
 
 
 /**

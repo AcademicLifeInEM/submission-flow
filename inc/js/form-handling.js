@@ -8,6 +8,7 @@ jQuery(document).ready(function($) {
     var firstName2 = $('#PR_first_name_2');
     var lastName2 = $('#PR_last_name_2');
     var emailAddress2 = $('#PR_email_2');
+    var twitterHandle2 = $('#PR_twitter_handle_2');
     var backgroundInfo2 = $( "textarea[name|='PR_background_info_2']" );
 
     var coauthorBg1 = $('textarea[name|="coauthor_1_background"]');
@@ -25,7 +26,7 @@ jQuery(document).ready(function($) {
             emailCheck();
         });
     });
-    $.each([firstName2, lastName2, emailAddress2, backgroundInfo2], function( index, item ){
+    $.each([firstName2, lastName2, emailAddress2, backgroundInfo2, twitterHandle2], function( index, item ){
         item.change(function(){
             optionalInputStatus();
             submitButtonGateway();
@@ -59,7 +60,7 @@ jQuery(document).ready(function($) {
     function submitButtonGateway() {
 
         // If none are empty in 1 and all are empty in 2
-        if ( !anyEmpty( $('#peer_reviewer_1') ) && allEmpty( $('#peer_reviewer_2') ) ) {
+        if ( !anyEmpty( $('#peer_reviewer_1') ) && allEmpty( $('#peer_reviewer_2') ) && $('#PR_twitter_handle_2').val() === '' ) {
             $('#publish').prop('disabled', false);
         }
         // If none are empty in 1 or 2
@@ -107,7 +108,7 @@ jQuery(document).ready(function($) {
 
     function allEmpty( parent ) {
         var obj = '';
-        parent.children('input, textarea').each(function() {
+        parent.children('.js-required').each(function() {
             obj += $(this).val();
         });
         return(obj === '');
@@ -115,7 +116,7 @@ jQuery(document).ready(function($) {
 
     function anyEmpty( parent ) {
         var obj = false;
-        parent.children('input, textarea').each(function() {
+        parent.children('.js-required').each(function() {
             if ( $(this).val() === '' ) {
                 obj = true;
             }
