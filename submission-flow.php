@@ -44,6 +44,24 @@ echo '<script src="https://www.google.com/recaptcha/api.js" async defer></script
 add_action( 'wp_head', 'header_script' );
 add_action( 'login_enqueue_scripts', 'header_script' );
 
+// VERIFY CAPTCHA
+function captcha_verification() {
+
+   $response = isset( $_POST['g-recaptcha-response'] ) ? esc_attr( $_POST['g-recaptcha-response'] ) : '';
+   $remote_ip = $_SERVER["REMOTE_ADDR"];
+
+   // make a GET request to the Google reCAPTCHA Server
+   $request = wp_remote_get(
+       'https://www.google.com/recaptcha/api/siteverify?secret=6Ld5GAsTAAAAANhwA05axeB92KjWkVrE_4qrX-mT
+&response=' . $response . '&remoteip=' . $remote_ip
+   );
+
+   // get the request response body
+   $response_body = wp_remote_retrieve_body( $request );
+   $result = json_decode( $response_body, true );
+   return $result['success'];
+}
+
  /** Output the reCAPTCHA form field. */
  function display_captcha() {
      echo '<div class="g-recaptcha" data-sitekey="6Ld5GAsTAAAAANTxfQ1U9BMm2b7o0pl-6OPoa4U3"></div>';
