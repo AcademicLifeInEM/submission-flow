@@ -29,64 +29,6 @@
  * 3) DEPENDENCY: TablePress -- Table with the title 'Staging Area: Blog Posts in Progress'
  */
 
-/** reCAPTCHA header script */
-function header_script() {
-echo '<script src="https://www.google.com/recaptcha/api.js" async defer></script>' .
-'<style type="text/css">'.
-    '#login {width: 350px !important;}' .
-    '.login h1 a {background-image: url(http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png);' .
-                ' background-size: auto; width: auto; height: auto; font-size: 40px; margin: 0 auto 10px;}' .
-    '.login form {padding: 26px 24px;}' .
-    '.login #nav {text-align: center;}' .
-    '.login #backtoblog {text-align: center;}' .
-'</style>';
-}
-add_action( 'wp_head', 'header_script' );
-add_action( 'login_enqueue_scripts', 'header_script' );
-
-// VERIFY CAPTCHA
-function captcha_verification() {
-
-   $secret = '6Ld5GAsTAAAAANhwA05axeB92KjWkVrE_4qrX-mT';
-   $response = isset( $_POST['g-recaptcha-response'] ) ? esc_attr( $_POST['g-recaptcha-response'] ) : '';
-   $remote_ip = $_SERVER["REMOTE_ADDR"];
-
-   $post_body = array(
-       'secret' => $secret,
-       'reponse' => $response,
-       'remoteip' => $remote_ip,
-   );
-
-   $args = array( 'body' => $post_body );
-
-   // make a GET request to the Google reCAPTCHA Server
-   $request = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', $args );
-   $response_body = wp_remote_retrieve_body( $request );
-
-   $answers = explode( "\n", $response_body );
-   $request_status = trim( $answers[0] );
-   return $request_status;
-
-   // $result = json_decode( $response_body, true );
-   // return $result['success'];
-}
-
- /** Output the reCAPTCHA form field. */
- function display_captcha() {
-     echo '<div class="g-recaptcha" data-sitekey="6Ld5GAsTAAAAANTxfQ1U9BMm2b7o0pl-6OPoa4U3"></div>';
- }
-add_action( 'register_form', 'display_captcha' );
-
- // authenticate the CAPTCHA answer
-function validate_captcha_registration_field( $errors, $sanitized_user_login, $user_email ) {
-     if ( isset( $_POST['g-recaptcha-response'] ) && !captcha_verification() ) {
-         $errors->add( 'failed_verification', '<strong>ERROR</strong>: Please retry CAPTCHA' );
-     }
-
-     return $errors;
- }
-add_action( 'registration_errors', 'validate_captcha_registration_field', 10, 3 );
-
 ////////////////////
 // PLUGIN GLOBALS //
 ////////////////////
@@ -761,6 +703,75 @@ function finalize_submission( $post ) {
 
 }
 add_action('publish_to_draft', 'finalize_submission');
+
+
+
+/**
+ * reCAPTCHA REGISTRATION INTEGRATION
+ */
+
+ // reCAPTCHA HEADER SCRIPT
+ function header_script() {
+ echo '<script src="https://www.google.com/recaptcha/api.js" async defer></script>' .
+ '<style type="text/css">'.
+     '#login {width: 350px !important;}' .
+     '.login h1 a {background-image: url(http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png);' .
+                 ' background-size: auto; width: auto; height: auto; font-size: 40px; margin: 0 auto 10px;}' .
+     '.login form {padding: 26px 24px;}' .
+     '.login #nav {text-align: center;}' .
+     '.login #backtoblog {text-align: center;}' .
+ '</style>';
+ }
+ add_action( 'wp_head', 'header_script' );
+ add_action( 'login_enqueue_scripts', 'header_script' );
+
+ // VERIFY CAPTCHA
+ function captcha_verification() {
+
+     $secret = '6Ld5GAsTAAAAANhwA05axeB92KjWkVrE_4qrX-mT';
+     $response = isset( $_POST['g-recaptcha-response'] ) ? esc_attr( $_POST['g-recaptcha-response'] ) : '';
+     $remote_ip = $_SERVER["REMOTE_ADDR"];
+
+     $post_body = array(
+         'secret' => $secret,
+         'reponse' => $response,
+         'remoteip' => $remote_ip,
+     );
+
+     $args = array( 'body' => $post_body );
+
+     // make a GET request to the Google reCAPTCHA Server
+     $request = wp_remote_post( 'https://www.google.com/recaptcha/api/siteverify', $args );
+     $response_body = wp_remote_retrieve_body( $request );
+
+     $answers = explode( "\n", $response_body );
+     $request_status = trim( $answers[0] );
+     return $request_status;
+
+     // $result = json_decode( $response_body, true );
+     // return $result['success'];
+ }
+
+  // DISPLAY reCAPTCHA ON REGISTRATION FORM
+ function display_captcha() {
+      echo '<div class="g-recaptcha" data-sitekey="6Ld5GAsTAAAAANTxfQ1U9BMm2b7o0pl-6OPoa4U3"></div>';
+  }
+ add_action( 'register_form', 'display_captcha' );
+
+  // AUTHENTICATE reCAPTCHA
+ function validate_captcha_registration_field( $errors, $sanitized_user_login, $user_email ) {
+      if ( isset( $_POST['g-recaptcha-response'] ) && !captcha_verification() ) {
+          $errors->add( 'failed_verification', '<strong>ERROR</strong>: Please retry CAPTCHA' );
+      }
+
+      return $errors;
+  }
+ add_action( 'registration_errors', 'validate_captcha_registration_field', 10, 3 );
+
+/**
+ * END reCAPTCHA INTEGRATION
+ */
+
 
 
 /**
