@@ -47,14 +47,19 @@ add_action( 'login_enqueue_scripts', 'header_script' );
 // VERIFY CAPTCHA
 function captcha_verification() {
 
+   $url = 'https://www.google.com/recaptcha/api/siteverify';
+   $secret = '6Ld5GAsTAAAAANhwA05axeB92KjWkVrE_4qrX-mT';
    $response = isset( $_POST['g-recaptcha-response'] ) ? esc_attr( $_POST['g-recaptcha-response'] ) : '';
    $remote_ip = $_SERVER["REMOTE_ADDR"];
 
-   // make a GET request to the Google reCAPTCHA Server
-   $request = wp_remote_get(
-       'https://www.google.com/recaptcha/api/siteverify?secret=6Ld5GAsTAAAAANhwA05axeB92KjWkVrE_4qrX-mT
-&response=' . $response . '&remoteip=' . $remote_ip
+   $args = array(
+       'secret' => $secret,
+       'reponse' => $response,
+       'remoteip' => $remote_ip,
    );
+
+   // make a GET request to the Google reCAPTCHA Server
+   $request = wp_remote_post( $url, $args );
 
    // get the request response body
    $response_body = wp_remote_retrieve_body( $request );
