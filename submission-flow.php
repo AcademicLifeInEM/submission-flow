@@ -759,7 +759,7 @@ add_action('publish_to_draft', 'finalize_submission');
   <div style="width: 302px; height: 422px;">
     <div style="width: 302px; height: 422px; position: relative;">
       <div style="width: 302px; height: 422px; position: absolute;">
-        <iframe src="https://www.google.com/recaptcha/api/fallback?k=your_site_key"
+        <iframe src="https://www.google.com/recaptcha/api/fallback?k=6Ld5GAsTAAAAANTxfQ1U9BMm2b7o0pl-6OPoa4U3"
                 frameborder="0" scrolling="no"
                 style="width: 302px; height:422px; border-style: none;">
         </iframe>
