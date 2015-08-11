@@ -812,7 +812,7 @@ function tablepress_add( $author, $title ) {
     global $wpdb;
 
     $posttitle = 'Staging Area: Blog Posts in Progress';
-    $postid = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $posttitle . "'" );
+    $postid = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = 'Staging Area: Blog Posts in Progress' AND  post_name = 'staging-area-articles-in-progress'" );
 
     $tablepress = get_post( $postid );
     $tabledata = json_decode( $tablepress->post_content );
