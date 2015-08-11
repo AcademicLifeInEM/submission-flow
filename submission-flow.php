@@ -237,7 +237,7 @@ function add_peer_reviewer_meta_box( $post ) {
         ${'PR_last_name_' . $i} = $values['PR_last_name_' . $i][0];
         ${'PR_email_' . $i} = $values['PR_email_' . $i][0];
         ${'PR_twitter_handle_' . $i} = $values['PR_twitter_handle_' . $i][0];
-        ${'PR_background_info_' . $i} = $values['PR_background_info_' . $i][0];
+        ${'PR_credentials_' . $i} = $values['PR_credentials_' . $i][0];
 
     }
 
@@ -260,7 +260,7 @@ function add_coauthor_meta_box( $post ) {
         ${'coauthor_' . $i . '_last_name'} = $values['coauthor_' . $i . '_last_name'][0];
         ${'coauthor_' . $i . '_email'} = $values['coauthor_' . $i . '_email'][0];
         ${'coauthor_' . $i . '_twitter'} = $values['coauthor_' . $i . '_twitter'][0];
-        ${'coauthor_' . $i . '_background'} = $values['coauthor_' . $i . '_background'][0];
+        ${'coauthor_' . $i . '_credentials'} = $values['coauthor_' . $i . '_credentials'][0];
 
 
     }
@@ -288,7 +288,7 @@ function save_peer_review_info_meta( $post_id ) {
         update_post_meta( $post_id, 'PR_first_name_1',  $_POST['PR_first_name_1'] );
         update_post_meta( $post_id, 'PR_last_name_1',  $_POST['PR_last_name_1'] );
         update_post_meta( $post_id, 'PR_email_1',  $_POST['PR_email_1'] );
-        update_post_meta( $post_id, 'PR_background_info_1',  $_POST['PR_background_info_1'] );
+        update_post_meta( $post_id, 'PR_credentials_1',  $_POST['PR_credentials_1'] );
         if ( isset( $_POST['PR_twitter_handle_1']) ) {
             update_post_meta( $post_id, 'PR_twitter_handle_1',  $_POST['PR_twitter_handle_1'] );
         }
@@ -299,7 +299,7 @@ function save_peer_review_info_meta( $post_id ) {
         update_post_meta( $post_id, 'PR_first_name_2',  $_POST['PR_first_name_2'] );
         update_post_meta( $post_id, 'PR_last_name_2',  $_POST['PR_last_name_2'] );
         update_post_meta( $post_id, 'PR_email_2',  $_POST['PR_email_2'] );
-        update_post_meta( $post_id, 'PR_background_info_2',  $_POST['PR_background_info_2'] );
+        update_post_meta( $post_id, 'PR_credentials_2',  $_POST['PR_credentials_2'] );
         if ( isset( $_POST['PR_twitter_handle_2']) ) {
             update_post_meta( $post_id, 'PR_twitter_handle_2',  $_POST['PR_twitter_handle_2'] );
         }
@@ -329,7 +329,7 @@ function save_coauthor_details_meta( $post_id ) {
                 update_post_meta( $post_id, 'coauthor_' . $i . '_last_name',  $_POST['coauthor_' . $i . '_last_name'] );
                 update_post_meta( $post_id, 'coauthor_' . $i . '_email',  $_POST['coauthor_' . $i . '_email'] );
                 update_post_meta( $post_id, 'coauthor_' . $i . '_twitter',  $_POST['coauthor_' . $i . '_twitter'] );
-                update_post_meta( $post_id, 'coauthor_' . $i . '_background',  wpautop( $_POST['coauthor_' . $i . '_background'] ) );
+                update_post_meta( $post_id, 'coauthor_' . $i . '_credentials',  wpautop( $_POST['coauthor_' . $i . '_credentials'] ) );
 
             }
 
@@ -359,7 +359,7 @@ function save_coauthor_details_meta( $post_id ) {
                     'display_name' => ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . ' ' . ucwords( $_POST['coauthor_' . $i . '_last_name'] ),
                     'first_name' => ucwords( $_POST['coauthor_' . $i . '_first_name'] ),
                     'last_name' => ucwords( $_POST['coauthor_' . $i . '_last_name'] ),
-                    'description' => $_POST['coauthor_' . $i . '_background'],
+                    'description' => $_POST['coauthor_' . $i . '_credentials'],
                     'role' => 'subscriber',
                 );
 
@@ -373,7 +373,7 @@ function save_coauthor_details_meta( $post_id ) {
                 $userdata = array(
                     'ID' => $the_existing_user->ID,
                     'user_login' => $username,
-                    'description' => $_POST['coauthor_' . $i . '_background'],
+                    'description' => $_POST['coauthor_' . $i . '_credentials'],
                 );
                 wp_update_user( $userdata );
                 update_user_meta( $the_existing_user->ID, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
@@ -404,7 +404,7 @@ function display_meta_for_copyeditors() {
             ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
             ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
             ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
-            ${'PR_background_info_' . $i} = $post_meta['PR_background_info_' . $i][0];
+            ${'PR_credentials_' . $i} = $post_meta['PR_credentials_' . $i][0];
 
         }
 
@@ -414,7 +414,7 @@ function display_meta_for_copyeditors() {
             ${'coauthor_' . $i . '_last_name'} = $post_meta['coauthor_' . $i . '_last_name'][0];
             ${'coauthor_' . $i . '_email'} = $post_meta['coauthor_' . $i . '_email'][0];
             ${'coauthor_' . $i . '_twitter'} = $post_meta['coauthor_' . $i . '_twitter'][0];
-            ${'coauthor_' . $i . '_background'} = $post_meta['coauthor_' . $i . '_background'][0];
+            ${'coauthor_' . $i . '_credentials'} = $post_meta['coauthor_' . $i . '_credentials'][0];
 
 
         }
@@ -673,7 +673,7 @@ function finalize_submission( $post ) {
             ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
             ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
             ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
-            ${'PR_background_info_' . $i} = $post_meta['PR_background_info_' . $i][0];
+            ${'PR_credentials_' . $i} = $post_meta['PR_credentials_' . $i][0];
 
         }
 
@@ -682,7 +682,7 @@ function finalize_submission( $post ) {
         update_post_meta( $post->ID, 'peer_review_box_heading_2', 'Expert Peer Review' );
         update_post_meta( $post->ID, 'reviewer_name_2', $PR_first_name_1 . ' ' . $PR_last_name_1 );
         update_post_meta( $post->ID, 'reviewer_twitter_2', $PR_twitter_handle_1 );
-        update_post_meta( $post->ID, 'reviewer_background_2', $PR_background_info_1 );
+        update_post_meta( $post->ID, 'reviewer_background_2', $PR_credentials_1 );
         update_post_meta( $post->ID, 'reviewer_selector', '2' );
 
         if ( $PR_first_name_2 !== '' ) {
@@ -690,7 +690,7 @@ function finalize_submission( $post ) {
             update_post_meta( $post->ID, 'peer_review_box_heading_3', 'Expert Peer Review' );
             update_post_meta( $post->ID, 'reviewer_name_3', $PR_first_name_2 . ' ' . $PR_last_name_2 );
             update_post_meta( $post->ID, 'reviewer_twitter_3', $PR_twitter_handle_2 );
-            update_post_meta( $post->ID, 'reviewer_background_3', $PR_background_info_2 );
+            update_post_meta( $post->ID, 'reviewer_background_3', $PR_credentials_2 );
             update_post_meta( $post->ID, 'reviewer_selector', '3' );
 
         }
@@ -754,7 +754,28 @@ add_action('publish_to_draft', 'finalize_submission');
 
   // DISPLAY reCAPTCHA ON REGISTRATION FORM
  function display_captcha() {
-      echo '<div class="g-recaptcha" data-sitekey="6Ld5GAsTAAAAANTxfQ1U9BMm2b7o0pl-6OPoa4U3"></div>';
+      echo '<div class="g-recaptcha" data-sitekey="6Ld5GAsTAAAAANTxfQ1U9BMm2b7o0pl-6OPoa4U3"></div>' .
+      '<noscript>
+  <div style="width: 302px; height: 422px;">
+    <div style="width: 302px; height: 422px; position: relative;">
+      <div style="width: 302px; height: 422px; position: absolute;">
+        <iframe src="https://www.google.com/recaptcha/api/fallback?k=your_site_key"
+                frameborder="0" scrolling="no"
+                style="width: 302px; height:422px; border-style: none;">
+        </iframe>
+      </div>
+      <div style="width: 300px; height: 60px; border-style: none;
+                  bottom: 12px; left: 25px; margin: 0px; padding: 0px; right: 25px;
+                  background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;">
+        <textarea id="g-recaptcha-response" name="g-recaptcha-response"
+                  class="g-recaptcha-response"
+                  style="width: 250px; height: 40px; border: 1px solid #c1c1c1;
+                         margin: 10px 25px; padding: 0px; resize: none;" >
+        </textarea>
+      </div>
+    </div>
+  </div>
+</noscript>';
   }
  add_action( 'register_form', 'display_captcha' );
 

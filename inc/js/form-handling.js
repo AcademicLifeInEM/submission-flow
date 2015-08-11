@@ -3,30 +3,30 @@ jQuery(document).ready(function($) {
     var firstName1 = $('#PR_first_name_1');
     var lastName1 = $('#PR_last_name_1');
     var emailAddress1 = $('#PR_email_1');
-    var backgroundInfo1 = $( "textarea[name|='PR_background_info_1']" );
+    var credentials1 = $( "textarea[name|='PR_credentials_1']" );
 
     var firstName2 = $('#PR_first_name_2');
     var lastName2 = $('#PR_last_name_2');
     var emailAddress2 = $('#PR_email_2');
     var twitterHandle2 = $('#PR_twitter_handle_2');
-    var backgroundInfo2 = $( "textarea[name|='PR_background_info_2']" );
+    var credentials2 = $( "textarea[name|='PR_credentials_2']" );
 
-    var coauthorBg1 = $('textarea[name|="coauthor_1_background"]');
-    var coauthorBg2 = $('textarea[name|="coauthor_2_background"]');
-    var coauthorBg3 = $('textarea[name|="coauthor_3_background"]');
-    var coauthorBg4 = $('textarea[name|="coauthor_4_background"]');
+    var coauthorBg1 = $('textarea[name|="coauthor_1_credentials"]');
+    var coauthorBg2 = $('textarea[name|="coauthor_2_credentials"]');
+    var coauthorBg3 = $('textarea[name|="coauthor_3_credentials"]');
+    var coauthorBg4 = $('textarea[name|="coauthor_4_credentials"]');
 
     requiredInputStatus();
     submitButtonGateway();
 
-    $.each([firstName1, lastName1, emailAddress1, backgroundInfo1], function( index, item ){
+    $.each([firstName1, lastName1, emailAddress1, credentials1], function( index, item ){
         item.change(function(){
             requiredInputStatus();
             submitButtonGateway();
             emailCheck();
         });
     });
-    $.each([firstName2, lastName2, emailAddress2, backgroundInfo2, twitterHandle2], function( index, item ){
+    $.each([firstName2, lastName2, emailAddress2, credentials2, twitterHandle2], function( index, item ){
         item.change(function(){
             optionalInputStatus();
             submitButtonGateway();
@@ -35,7 +35,7 @@ jQuery(document).ready(function($) {
     });
 
     function requiredInputStatus() {
-        $.each([firstName1, lastName1, emailAddress1, backgroundInfo1], function(index, item){
+        $.each([firstName1, lastName1, emailAddress1, credentials1], function(index, item){
             if (item.val() === '') {
                 item.addClass('form-invalid');
             } else {
@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
     }
 
     function optionalInputStatus() {
-        $.each([firstName2, lastName2, emailAddress2, backgroundInfo2], function(index, item){
+        $.each([firstName2, lastName2, emailAddress2, credentials2], function(index, item){
             if (item.val() === '') {
                 item.addClass('form-invalid');
             } else {
