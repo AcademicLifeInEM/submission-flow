@@ -8,7 +8,7 @@
     <label for="PR_twitter_handle_1" id="email_label1">Twitter</label><br>
     <input type="text" name="PR_twitter_handle_1" id="PR_twitter_handle_1" class="large-text" value="<?php echo(esc_attr( $PR_twitter_handle_1 )); ?>">
     <label for="PR_credentials_1">Credentials</label><br>
-    <textarea name="PR_credentials_1" placeholder="(title, institution, etc.)" class="large-text  js-required" style="resize: vertical;"><?php echo(esc_attr( $PR_credentials_1 )); ?></textarea><br>
+    <textarea name="PR_credentials_1" style="margin-bottom: 10px;" placeholder="(title, institution, etc.)" rows="3" class="fancy-textarea large-text  js-required"><?php echo(esc_attr( $PR_credentials_1 )); ?></textarea><br>
 </div>
 <button type="button" name="toggle_second_reviewer" style="width: 100%;">Add Second Reviewer</button>
 <div id="peer_reviewer_2" class="js-hide">
@@ -22,5 +22,5 @@
     <label for="PR_twitter_handle_2" id="email_label2">Twitter</label><br>
     <input type="text" name="PR_twitter_handle_2" id="PR_twitter_handle_2" class="large-text" value="<?php echo(esc_attr( $PR_twitter_handle_1 )); ?>">
     <label for="PR_credentials_2">Credentials</label><br>
-    <textarea name="PR_credentials_2" placeholder="(title, institution, etc.)" class="large-text  js-required" style="resize: vertical;"><?php echo(esc_attr( $PR_credentials_2 )); ?></textarea><br>
+    <textarea name="PR_credentials_2" placeholder="(title, institution, etc.)" rows="3" class="fancy-textarea large-text  js-required"><?php echo(esc_attr( $PR_credentials_2 )); ?></textarea><br>
 </div>

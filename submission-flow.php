@@ -11,6 +11,8 @@
  *	License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
+// TODO: AUTOMATICALLY INCREASE TEXTAREA SIZE COAUTHOR FIELDS
+
 /**
  *
  *   ___ __  __ ____   ___  ____ _____  _    _   _ _____

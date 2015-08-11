@@ -18,12 +18,14 @@ jQuery(document).ready(function($) {
 
     requiredInputStatus();
     submitButtonGateway();
+    requireRow($('#coauthor_1_div'));
 
     $.each([firstName1, lastName1, emailAddress1, credentials1], function( index, item ){
         item.change(function(){
             requiredInputStatus();
             submitButtonGateway();
             emailCheck();
+            requireRow( $('#coauthor_container div:not(.js-hide):last') );
         });
     });
     $.each([firstName2, lastName2, emailAddress2, credentials2, twitterHandle2], function( index, item ){
@@ -31,6 +33,7 @@ jQuery(document).ready(function($) {
             optionalInputStatus();
             submitButtonGateway();
             emailCheck();
+            requireRow( $('#coauthor_container div:not(.js-hide):last') );
         });
     });
 
@@ -70,33 +73,41 @@ jQuery(document).ready(function($) {
             $('#publish').prop('disabled', true);
         }
 
+        if ( $('#coauthor_container>div').children().hasClass('form-invalid') || $('#peer_reviewer_1').children().hasClass('form-invalid') || $('#peer_reviewer_2').children().hasClass('form-invalid') ) {
+            $('#publish').prop('disabled', true);
+        }
+
     }
 
     function emailCheck() {
 
         if ( emailAddress1.val() !== '' ) {
-            if ( !IsEmail(emailAddress1.val()) ) {
-                if ( !$('#invalid-email1').length ) {
-                    $('#email_label1').prepend(' <p id="invalid-email1" style="color: red; text-align: center; font-weight: 600; padding:0px; margin: 0px;">**Email Address Invalid**</p>');
+            if ( !isEmail(emailAddress1.val()) ) {
+                if ( $('#invalid-email-alert').hasClass('js-hide') ) {
+                    $('#invalid-email-alert').removeClass('js-hide');
                 }
                 emailAddress1.addClass('form-invalid');
                 $('#publish').prop('disabled', true);
             } else {
-                $('#invalid-email1').remove();
+                if ( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() === '' || isEmail( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() ) ) {
+                    $('#invalid-email-alert').addClass('js-hide');
+                }
                 emailAddress1.removeClass('form-invalid');
                 submitButtonGateway();
             }
         }
 
         if ( emailAddress2.val() !== '' ) {
-            if ( !IsEmail(emailAddress2.val()) ) {
-                if ( !$('#invalid-email2').length ) {
-                    $('#email_label2').prepend(' <p id="invalid-email2" style="color: red; text-align: center; font-weight: 600; padding:0px; margin: 0px;">**Email Address Invalid**</p>');
+            if ( !isEmail(emailAddress2.val()) ) {
+                if ( $('#invalid-email-alert').hasClass('js-hide') ) {
+                    $('#invalid-email-alert').removeClass('js-hide');
                 }
                 emailAddress2.addClass('form-invalid');
                 $('#publish').prop('disabled', true);
             } else {
-                $('#invalid-email2').remove();
+                if ( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() === '' || isEmail( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() ) ) {
+                    $('#invalid-email-alert').addClass('js-hide');
+                }
                 emailAddress2.removeClass('form-invalid');
                 submitButtonGateway();
             }
@@ -124,7 +135,7 @@ jQuery(document).ready(function($) {
         return obj;
     }
 
-    function IsEmail(email) {
+    function isEmail(email) {
         var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
         return regex.test(email);
     }
@@ -148,6 +159,7 @@ jQuery(document).ready(function($) {
 
          if (clickIterator < 4) {
              $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
+             requireRow($('#coauthor_' + clickIterator + '_div'));
              clickIterator++;
          } else if (clickIterator == 4) {
              $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
@@ -169,5 +181,58 @@ jQuery(document).ready(function($) {
         $('#peer_reviewer_2').removeClass('js-hide');
 
      });
+
+     //////////////////////////////////////////////
+     // ----------COAUTHOR FIELD LOGIC---------- //
+     //////////////////////////////////////////////
+
+     $('#coauthor_container>div>.js-required').each(function(){
+         $(this).change(function(){
+             requireRow($(this).parent());
+         });
+     });
+
+     function requireRow( parent ) {
+
+         if ( !allEmpty( parent ) ) {
+             parent.children('.js-required').each(function(){
+                 if ( $(this).val() === '' ) {
+                     $(this).addClass("form-invalid");
+                     $('#publish').prop('disabled', true);
+                     $('#add_coauthor').prop('disabled', true);
+                 } else {
+                     $(this).removeClass('form-invalid');
+                     submitButtonGateway();
+                 }
+             });
+             if ( parent.children('input:nth-of-type(3)') !== ''  ) {
+                  $('#add_coauthor').prop('disabled', true);
+             }
+         } else {
+             parent.children('.js-required').removeClass('form-invalid');
+             submitButtonGateway();
+             $('#add_coauthor').prop('disabled', true);
+         }
+
+         if ( anyEmpty( parent ) === false & isEmail( parent.children('input:nth-of-type(3)').val() ) ) {
+             $('#add_coauthor').prop('disabled', false);
+         }
+
+         if ( $('#coauthor_container').children('.js-hide').length === 0 ) {
+             $('#add_coauthor').prop('disabled', true);
+         }
+
+         if ( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() !== '' & !isEmail( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() ) ) {
+             $('#invalid-email-alert').removeClass('js-hide');
+             $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').addClass('form-invalid');
+         } else {
+             $('#invalid-email-alert').addClass('js-hide');
+             emailCheck();
+         }
+
+         submitButtonGateway();
+
+     }
+
 
 });
