@@ -1,4 +1,8 @@
 <div id="peer_reviewer_1">
+    <div id="SF_photo_1_holder" class="photo_holder">
+        <input type="hidden" name="SF_photo_1_url" id="SF_photo_1_url" value="">
+        <button type="button" id="SF_photo_1">Upload Photo</button>
+    </div>
     <label for="PR_first_name_1">First Name</label><br>
     <input type="text" id="PR_first_name_1" name="PR_first_name_1" class="large-text js-required" value="<?php echo(esc_attr( $PR_first_name_1 )); ?>" /><br>
     <label for="PR_last_name_1">Last Name</label><br>
@@ -13,6 +17,10 @@
 <button type="button" name="toggle_second_reviewer" style="width: 100%;">Add Second Reviewer</button>
 <div id="peer_reviewer_2" class="js-hide">
     <hr>
+    <div id="SF_photo_2_holder" class="photo_holder">
+        <input type="hidden" name="SF_photo_2_url" id="SF_photo_2_url" value="">
+        <button type="button" id="SF_photo_2">Upload Photo</button>
+    </div>
     <label for="PR_first_name_2">First Name</label><br>
     <input type="text" id="PR_first_name_2" name="PR_first_name_2" class="large-text  js-required" value="<?php echo(esc_attr( $PR_first_name_2 )); ?>" /><br>
     <label for="PR_last_name_2">Last Name</label><br>

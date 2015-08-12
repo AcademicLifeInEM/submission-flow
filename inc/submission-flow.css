@@ -9,6 +9,45 @@
     padding: 3px 5px;
 }
 
+.photo_holder {
+    text-align: center;
+}
+
+.inserted_headshot {
+    height: 150px;
+    max-width: 150px;
+    width: auto;
+    margin: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.inserted_headshot:hover {
+    background-color: rgba(0,0,0,0.3);
+    background-blend-mode: overlay;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.inserted_headshot div {
+    visibility: hidden;
+	margin: auto;
+	height: 150px;
+	width: 50px;
+	background-image: url('http://www.aliem.com/wp-content/uploads/refresh-icon.png');
+	background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+
+}
+
+.inserted_headshot:hover div {
+    visibility: visible;
+
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }

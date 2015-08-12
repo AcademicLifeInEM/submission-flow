@@ -134,6 +134,17 @@ function enqueue_plugin_scripts() {
         /** Enqueue scripts */
         wp_enqueue_script( 'dashboard-hide' );
         wp_enqueue_script( 'form-handler' );
+
+        /** Register, localize, and enqueue media upload button scripts */
+        wp_register_script('media-uploads', plugins_url( 'inc/js/media-uploads.js', __FILE__ ), array( 'jquery' ) );
+        wp_localize_script( 'media-uploads', 'meta_image',
+            array(
+                'title' => 'Choose or Upload an Image',
+                'button' => 'Use this image',
+            )
+        );
+        wp_enqueue_script( 'media-uploads' );
+
     } else {
 
         global $post;
