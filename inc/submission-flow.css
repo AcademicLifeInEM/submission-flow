@@ -9,11 +9,61 @@
     padding: 3px 5px;
 }
 
+/**
+ * COAUTHOR FLEXBOXES
+ */
+/***********CONTAINERS************/
+.flex-container {
+    display: flex;
+}
+.flex-container-vertical {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.flex-container-vertical .flex-box {
+    flex-basis: 50%;
+}
+
+/**************BOXES**************/
+.flex-box {
+    padding-left: 3px;
+    padding-right: 3px;
+    flex: auto;
+}
+
+.flex-box textarea {
+    resize: vertical;
+    flex: 1;
+}
+
+.flex-box-minimal {
+    flex-basis: content;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+
+.flex-box-buttons {
+    align-self: center;
+    margin-left: -10px;
+    margin-right: 3px;
+}
+
+.flex-box-add {
+    align-self: flex-end;
+}
+
+/**
+ * PHOTO OVERLAYS
+ */
+
 .photo_holder {
     text-align: center;
 }
 
-.inserted_headshot {
+#SF_photo_1.inserted_headshot,
+#SF_photo_2.inserted_headshot {
     height: 150px;
     max-width: 150px;
     width: auto;
@@ -23,14 +73,8 @@
     background-position: center;
 }
 
-.inserted_headshot:hover {
-    background-color: rgba(0,0,0,0.3);
-    background-blend-mode: overlay;
-    transition: 0.4s;
-    cursor: pointer;
-}
-
-.inserted_headshot div {
+#SF_photo_1.inserted_headshot div,
+#SF_photo_2.inserted_headshot div {
     visibility: hidden;
 	margin: auto;
 	height: 150px;
@@ -39,14 +83,58 @@
 	background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-
-
 }
 
-.inserted_headshot:hover div {
+#SF_photo_3.inserted_headshot,
+#SF_photo_4.inserted_headshot,
+#SF_photo_5.inserted_headshot,
+#SF_photo_6.inserted_headshot {
+    width: 100px;
+    max-height: 100px;
+    margin: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#SF_photo_3.inserted_headshot div,
+#SF_photo_4.inserted_headshot div,
+#SF_photo_5.inserted_headshot div,
+#SF_photo_6.inserted_headshot div {
+    visibility: hidden;
+	margin: auto;
+	height: 100px;
+    width: 50px;
+	background-image: url('http://www.aliem.com/wp-content/uploads/refresh-icon.png');
+	background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#SF_photo_1.inserted_headshot:hover,
+#SF_photo_2.inserted_headshot:hover,
+#SF_photo_3.inserted_headshot:hover,
+#SF_photo_4.inserted_headshot:hover,
+#SF_photo_5.inserted_headshot:hover,
+#SF_photo_6.inserted_headshot:hover {
+    background-color: rgba(0,0,0,0.3);
+    background-blend-mode: overlay;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+#SF_photo_1.inserted_headshot:hover div,
+#SF_photo_2.inserted_headshot:hover div,
+#SF_photo_3.inserted_headshot:hover div,
+#SF_photo_4.inserted_headshot:hover div,
+#SF_photo_5.inserted_headshot:hover div,
+#SF_photo_6.inserted_headshot:hover div {
     visibility: visible;
-
 }
+
+/**
+ * SMALL SCROLLBAR
+ */
 
 ::-webkit-scrollbar {
   width: 10px;
