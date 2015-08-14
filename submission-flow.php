@@ -11,7 +11,11 @@
  *	License URI: https://www.gnu.org/licenses/gpl-3.0.html
 */
 
-// TODO: AUTOMATICALLY INCREASE TEXTAREA SIZE COAUTHOR FIELDS
+/**
+ * TODO: Submit button logic
+ * TODO: Add classes to buttons
+ * TODO: Peer reviewer photo logic
+ */
 
 /**
  *
@@ -134,6 +138,17 @@ function enqueue_plugin_scripts() {
         /** Enqueue scripts */
         wp_enqueue_script( 'dashboard-hide' );
         wp_enqueue_script( 'form-handler' );
+
+        /** Register, localize, and enqueue media upload button scripts */
+        wp_register_script('media-uploads', plugins_url( 'inc/js/media-uploads.js', __FILE__ ), array( 'jquery' ) );
+        wp_localize_script( 'media-uploads', 'meta_image',
+            array(
+                'title' => 'Choose or Upload an Image',
+                'button' => 'Use this image',
+            )
+        );
+        wp_enqueue_script( 'media-uploads' );
+
     } else {
 
         global $post;
@@ -240,9 +255,9 @@ function add_peer_reviewer_meta_box( $post ) {
         ${'PR_email_' . $i} = $values['PR_email_' . $i][0];
         ${'PR_twitter_handle_' . $i} = $values['PR_twitter_handle_' . $i][0];
         ${'PR_credentials_' . $i} = $values['PR_credentials_' . $i][0];
+        ${'SF_photo_' . $i . '_url'} = $values['SF_photo_' . $i . '_url'][0];
 
     }
-
 
     require( 'inc/meta-peer-reviewer-info.php' );
 
@@ -256,7 +271,7 @@ function add_coauthor_meta_box( $post ) {
 
     $values = get_post_custom( $post->ID );
 
-    for ( $i=1; $i < 5; $i++ ) {
+    for ( $i = 1; $i < 5; $i++ ) {
 
         ${'coauthor_' . $i . '_first_name'} = $values['coauthor_' . $i . '_first_name'][0];
         ${'coauthor_' . $i . '_last_name'} = $values['coauthor_' . $i . '_last_name'][0];
@@ -265,6 +280,10 @@ function add_coauthor_meta_box( $post ) {
         ${'coauthor_' . $i . '_credentials'} = $values['coauthor_' . $i . '_credentials'][0];
 
 
+    }
+
+    for ( $i = 3; $i < 7; $i++ ) {
+        ${'SF_photo_' . $i . '_url'} = $values['SF_photo_' . $i . '_url'][0];
     }
 
     require( 'inc/meta-coauthors.php' );
@@ -284,13 +303,14 @@ function save_peer_review_info_meta( $post_id ) {
     if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
 			return;
 	}
-// FIXME:
+// FIXME: Long, drawn out if statements - make shorter
     if ( isset( $_POST['PR_first_name_1']) ) {
 
         update_post_meta( $post_id, 'PR_first_name_1',  $_POST['PR_first_name_1'] );
         update_post_meta( $post_id, 'PR_last_name_1',  $_POST['PR_last_name_1'] );
         update_post_meta( $post_id, 'PR_email_1',  $_POST['PR_email_1'] );
         update_post_meta( $post_id, 'PR_credentials_1',  $_POST['PR_credentials_1'] );
+        update_post_meta( $post_id, 'SF_photo_1_url',  $_POST['SF_photo_1_url'] );
         if ( isset( $_POST['PR_twitter_handle_1']) ) {
             update_post_meta( $post_id, 'PR_twitter_handle_1',  $_POST['PR_twitter_handle_1'] );
         }
@@ -302,6 +322,7 @@ function save_peer_review_info_meta( $post_id ) {
         update_post_meta( $post_id, 'PR_last_name_2',  $_POST['PR_last_name_2'] );
         update_post_meta( $post_id, 'PR_email_2',  $_POST['PR_email_2'] );
         update_post_meta( $post_id, 'PR_credentials_2',  $_POST['PR_credentials_2'] );
+        update_post_meta( $post_id, 'SF_photo_2_url',  $_POST['SF_photo_2_url'] );
         if ( isset( $_POST['PR_twitter_handle_2']) ) {
             update_post_meta( $post_id, 'PR_twitter_handle_2',  $_POST['PR_twitter_handle_2'] );
         }
@@ -332,6 +353,7 @@ function save_coauthor_details_meta( $post_id ) {
                 update_post_meta( $post_id, 'coauthor_' . $i . '_email',  $_POST['coauthor_' . $i . '_email'] );
                 update_post_meta( $post_id, 'coauthor_' . $i . '_twitter',  $_POST['coauthor_' . $i . '_twitter'] );
                 update_post_meta( $post_id, 'coauthor_' . $i . '_credentials',  wpautop( $_POST['coauthor_' . $i . '_credentials'] ) );
+                update_post_meta( $post_id, 'SF_photo_' . ($i + 2) . '_url', urlencode( $_POST['SF_photo_' . ($i + 2) . '_url'] ) );
 
             }
 
@@ -349,7 +371,7 @@ function save_coauthor_details_meta( $post_id ) {
             if ( get_user_by( 'email', strtolower( $_POST['coauthor_' . $i . '_email'] ) ) == '' && get_user_by( 'login', $username ) == '' ) {
 
                 // Corrects error where a user with the login '.' would be created
-                // FIXME:
+                // FIXME: Error where a user with the login '.' would be created
                 if ($username == '.') {
                     break;
                 }
@@ -367,6 +389,7 @@ function save_coauthor_details_meta( $post_id ) {
 
                 $new_user_id = wp_insert_user( $userdata );
                 update_user_meta( $new_user_id, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
+                update_user_meta( $new_user_id, 'ts_fab_photo_url', $_POST['SF_photo_' . ($i + 2) . '_url'] );
 
             } else {
 
@@ -379,6 +402,7 @@ function save_coauthor_details_meta( $post_id ) {
                 );
                 wp_update_user( $userdata );
                 update_user_meta( $the_existing_user->ID, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
+                update_user_meta( $the_existing_user->ID, 'ts_fab_photo_url', $_POST['SF_photo_' . ($i + 2) . '_url'] );
             }
         }
     }
@@ -419,6 +443,10 @@ function display_meta_for_copyeditors() {
             ${'coauthor_' . $i . '_credentials'} = $post_meta['coauthor_' . $i . '_credentials'][0];
 
 
+        }
+
+        for ( $i = 3; $i < 7; $i++ ) {
+            ${'SF_photo_' . $i . '_url'} = $post_meta['SF_photo_' . $i . '_url'][0];
         }
 
         add_meta_box( 'peer_reviewer_meta_box', 'Expert Peer Reviewer Information', 'add_peer_reviewer_meta_box', 'page', 'side', 'high' );
@@ -676,6 +704,7 @@ function finalize_submission( $post ) {
             ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
             ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
             ${'PR_credentials_' . $i} = $post_meta['PR_credentials_' . $i][0];
+            ${'SF_photo_' . $i . '_url'} = $post_meta['SF_photo_' . $i . '_url'][0];
 
         }
 
@@ -686,6 +715,7 @@ function finalize_submission( $post ) {
         update_post_meta( $post->ID, 'reviewer_twitter_2', $PR_twitter_handle_1 );
         update_post_meta( $post->ID, 'reviewer_background_2', $PR_credentials_1 );
         update_post_meta( $post->ID, 'reviewer_selector', '2' );
+        update_post_meta( $post->ID, 'reviewer_headshot_image_2', $SF_photo_1_url );
 
         if ( $PR_first_name_2 !== '' ) {
 
@@ -694,6 +724,7 @@ function finalize_submission( $post ) {
             update_post_meta( $post->ID, 'reviewer_twitter_3', $PR_twitter_handle_2 );
             update_post_meta( $post->ID, 'reviewer_background_3', $PR_credentials_2 );
             update_post_meta( $post->ID, 'reviewer_selector', '3' );
+            update_post_meta( $post->ID, 'reviewer_headshot_image_3', $SF_photo_2_url );
 
         }
 
