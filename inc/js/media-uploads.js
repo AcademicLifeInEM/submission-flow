@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
                     var media_attachment = holderArray[index].state().get('selection').first().toJSON();
                     $(hiddenUrlArray[index]).val(media_attachment.url);
                     $(item).replaceWith(
-                        '<div id="SF_photo_' + (index + 1) + '" class="inserted_headshot" style="background-image: url(\'' + media_attachment.url + '\');"><div></div></div>'
+                        '<div id="SF_photo_' + (index + 1) + '" class="inserted_headshot has_hover" style="background-image: url(\'' + media_attachment.url + '\');"><div></div></div>'
                     );
                 });
 

@@ -24,10 +24,6 @@ jQuery(document).ready(function($) {
     var coauthorBg3 = $('textarea[name|="coauthor_3_credentials"]');
     var coauthorBg4 = $('textarea[name|="coauthor_4_credentials"]');
 
-    requiredInputStatus();
-    submitButtonGateway();
-    addCoauthorHandler();
-    coauthorRequiredStatus();
 
     $.each([firstName1, lastName1, emailAddress1, credentials1], function( index, item ){
         item.change(function(){
@@ -258,10 +254,12 @@ jQuery(document).ready(function($) {
                 $(this).find('.js-required').each(function(){
                     if ( $(this).val() === '' ) {
                         $(this).addClass('form-invalid');
-                    } else {
+                    } else if ( $(this).is('[name$="_email"]') && !isEmail($(this).val()) ) {
+                        $(this).addClass('form-invalid');
+                    }
+                    else {
                         $(this).removeClass('form-invalid');
                     }
-
                 });
             } else {
                 $(this).find('.js-required').removeClass('form-invalid');
@@ -303,6 +301,9 @@ jQuery(document).ready(function($) {
 
     }
 
-
+    requiredInputStatus();
+    submitButtonGateway();
+    addCoauthorHandler();
+    coauthorRequiredStatus();
 
 });
