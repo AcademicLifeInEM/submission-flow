@@ -12,12 +12,6 @@
 */
 
 /**
- * TODO: Submit button logic
- * TODO: Add classes to buttons
- * TODO: Peer reviewer photo logic
- */
-
-/**
  *
  *   ___ __  __ ____   ___  ____ _____  _    _   _ _____
  *  |_ _|  \/  |  _ \ / _ \|  _ \_   _|/ \  | \ | |_   _|

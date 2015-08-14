@@ -13,7 +13,7 @@
                 <div class="flex-container-vertical flex-box-buttons photo_container">
                     <input type="hidden" id="SF_photo_3_url" name="SF_photo_3_url" value="<?php echo( ( $coauthor_1_first_name === '' ? '' : urldecode($SF_photo_3_url) ) ); ?>">
                     <?php if ( $SF_photo_3_url === '' || $SF_photo_3_url === NULL || $coauthor_1_first_name === '' ) {
-                        echo '<button type="button" id="SF_photo_3">Upload Photo</button>';
+                        echo '<button class="button-secondary" type="button" id="SF_photo_3">Upload Photo</button>';
                     } else {
                         echo '<div id="SF_photo_3" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_3_url ) . '\')"><div></div></div>';
                     }
@@ -70,7 +70,7 @@
                     <div class="flex-container-vertical flex-box-buttons photo_container">
                         <input type="hidden" id="SF_photo_4_url" name="SF_photo_4_url" value="<?php echo( ( $coauthor_2_first_name === '' ? '' : urldecode($SF_photo_4_url) ) ); ?>">
                         <?php if ( $SF_photo_4_url === '' || $SF_photo_4_url === NULL || $coauthor_2_first_name === '' ) {
-                            echo '<button type="button" id="SF_photo_4">Upload Photo</button>';
+                            echo '<button class="button-secondary" type="button" id="SF_photo_4">Upload Photo</button>';
                         } else {
                             echo '<div id="SF_photo_4" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_4_url ) . '\')"><div></div></div>';
                         }
@@ -128,7 +128,7 @@
                     <div class="flex-container-vertical flex-box-buttons photo_container">
                         <input type="hidden" id="SF_photo_5_url" name="SF_photo_5_url" value="<?php echo( ( $coauthor_3_first_name === '' ? '' : urldecode($SF_photo_5_url) ) ); ?>">
                         <?php if ( $SF_photo_5_url === '' || $SF_photo_5_url === NULL || $coauthor_3_first_name === '' ) {
-                            echo '<button type="button" id="SF_photo_5">Upload Photo</button>';
+                            echo '<button class="button-secondary" type="button" id="SF_photo_5">Upload Photo</button>';
                         } else {
                             echo '<div id="SF_photo_5" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_5_url ) . '\')"><div></div></div>';
                         }
@@ -187,7 +187,7 @@
                     <div class="flex-container-vertical flex-box-buttons photo_container">
                         <input type="hidden" id="SF_photo_6_url" name="SF_photo_6_url" value="<?php echo( ( $coauthor_4_first_name === '' ? '' : urldecode($SF_photo_6_url) ) ); ?>">
                         <?php if ( $SF_photo_6_url === '' || $SF_photo_6_url === NULL || $coauthor_4_first_name === '' ) {
-                            echo '<button type="button" id="SF_photo_6">Upload Photo</button>';
+                            echo '<button class="button-secondary" type="button" id="SF_photo_6">Upload Photo</button>';
                         } else {
                             echo '<div id="SF_photo_6" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_6_url ) . '\')"><div></div></div>';
                         }

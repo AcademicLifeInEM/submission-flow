@@ -2,7 +2,7 @@
     <div id="SF_photo_1_holder" class="photo_holder">
         <input type="hidden" name="SF_photo_1_url" id="SF_photo_1_url" value="<?php echo( ( $PR_first_name_1 === '' ? '' : urldecode($SF_photo_1_url) ) ); ?>">
         <?php if ( $SF_photo_1_url === '' || $SF_photo_1_url === NULL || $PR_first_name_1 === '' ) {
-            echo '<button type="button" id="SF_photo_1">Upload Photo</button>';
+            echo '<button class="button-secondary" type="button" id="SF_photo_1">Upload Photo</button>';
         } else {
             echo '<div id="SF_photo_1" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_1_url ) . '\')"><div></div></div>';
         }
@@ -19,13 +19,13 @@
     <label for="PR_credentials_1">Credentials</label><br>
     <textarea name="PR_credentials_1" style="margin-bottom: 10px;" placeholder="(title, institution, etc.)" rows="3" class="fancy-textarea large-text  js-required"><?php echo(esc_attr( $PR_credentials_1 )); ?></textarea><br>
 </div>
-<button type="button" name="toggle_second_reviewer" style="width: 100%;">Add Second Reviewer</button>
+<button type="button" class="button-secondary" name="toggle_second_reviewer" style="width: 100%;">Add Second Reviewer</button>
 <div id="peer_reviewer_2" class="js-hide">
     <hr>
     <div id="SF_photo_2_holder" class="photo_holder">
         <input type="hidden" name="SF_photo_2_url" id="SF_photo_2_url" value="<?php echo( ( $PR_first_name_2 === '' ? '' : urldecode($SF_photo_2_url) ) ); ?>">
         <?php if ( $SF_photo_2_url === '' || $SF_photo_2_url === NULL || $PR_first_name_2 === '' ) {
-            echo '<button type="button" id="SF_photo_2">Upload Photo</button>';
+            echo '<button class="button-secondary" type="button" id="SF_photo_2">Upload Photo</button>';
         } else {
             echo '<div id="SF_photo_2" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_2_url ) . '\')"><div></div></div>';
         }

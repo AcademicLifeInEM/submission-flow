@@ -79,12 +79,14 @@ jQuery(document).ready(function($) {
         var reviewerRequires = $('#peer_reviewer_meta_box').find('.form-invalid');
         var reviewerVisibleRows = $('#peer_reviewer_meta_box>.inside').children('div').not('.js-hide');
         var reviewerPhotoFields = reviewerVisibleRows.find('.inserted_headshot');
+        var reviewerFilledRows = reviewerPhotoChecker();
 
         var coauthorRequires = $('#coauthor_details').find('.form-invalid');
         var coauthorVisibleRows = $('#coauthor_details').children('div').not('.js-hide');
         var coauthorPhotoFields = coauthorVisibleRows.find('.inserted_headshot');
+        var coauthorFilledRows = coauthorRequiredStatus();
 
-        if ( coauthorRequires.length > 0 || reviewerRequires.length > 0 || coauthorPhotoFields.length !== coauthorVisibleRows.length || reviewerPhotoFields.length !== reviewerVisibleRows.length ) {
+        if ( coauthorRequires.length > 0 || reviewerRequires.length > 0 || coauthorPhotoFields.length !== coauthorFilledRows || reviewerPhotoFields.length !== reviewerFilledRows ) {
             $('#publish').prop('disabled', true);
         } else {
             $('#publish').prop('disabled', false);
@@ -120,6 +122,29 @@ jQuery(document).ready(function($) {
         });
         return badEmailExists;
     }
+
+
+    function reviewerPhotoChecker() {
+
+        var filledCounter = 0;
+
+        $('#peer_reviewer_meta_box>.inside').children('div').not('.js-hide').each(function(){
+
+            var allFieldsEmpty = true;
+            $(this).find('.js-required').each(function(){
+                if ( $(this).val() !== '' ) {
+                    allFieldsEmpty = false;
+                    filledCounter++;
+                    return false;
+                }
+            });
+        });
+
+        return filledCounter;
+
+    }
+
+
 
     // HELPER FUNCTIONS
 
@@ -216,12 +241,15 @@ jQuery(document).ready(function($) {
 
     function coauthorRequiredStatus() {
 
+        var filledCounter = 0;
+
         $('#coauthor_details').children().not('.js-hide').each(function(){
 
             var allFieldsEmpty = true;
             $(this).find('.js-required').each(function(){
                 if ( $(this).val() !== '' ) {
                     allFieldsEmpty = false;
+                    filledCounter++;
                     return false;
                 }
             });
@@ -241,6 +269,7 @@ jQuery(document).ready(function($) {
 
         });
 
+        return filledCounter;
     }
 
 
