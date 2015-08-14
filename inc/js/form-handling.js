@@ -1,5 +1,13 @@
 jQuery(document).ready(function($) {
 
+    /**
+     * FIXME:
+     * KNOWN ISSUES:
+     * - Leak somewhere that allows addition of another coauthor if email is
+     * 	 changed from a working email to a bad email.
+     */
+
+
     var firstName1 = $('#PR_first_name_1');
     var lastName1 = $('#PR_last_name_1');
     var emailAddress1 = $('#PR_email_1');
@@ -18,23 +26,29 @@ jQuery(document).ready(function($) {
 
     requiredInputStatus();
     submitButtonGateway();
-    requireRow($('#coauthor_1_div'));
+    addCoauthorHandler();
+    coauthorRequiredStatus();
 
     $.each([firstName1, lastName1, emailAddress1, credentials1], function( index, item ){
         item.change(function(){
             requiredInputStatus();
-            submitButtonGateway();
             emailCheck();
-            requireRow( $('#coauthor_container div:not(.js-hide):last') );
+            submitButtonGateway();
         });
     });
     $.each([firstName2, lastName2, emailAddress2, credentials2, twitterHandle2], function( index, item ){
         item.change(function(){
             optionalInputStatus();
-            submitButtonGateway();
             emailCheck();
-            requireRow( $('#coauthor_container div:not(.js-hide):last') );
+            submitButtonGateway();
         });
+    });
+
+    $('.photo_holder').bind('DOMSubtreeModified', function() {
+        coauthorRequiredStatus();
+        addCoauthorHandler();
+        emailCheck();
+        submitButtonGateway();
     });
 
     function requiredInputStatus() {
@@ -62,64 +76,56 @@ jQuery(document).ready(function($) {
 
     function submitButtonGateway() {
 
-        // If none are empty in 1 and all are empty in 2
-        if ( !anyEmpty( $('#peer_reviewer_1') ) && allEmpty( $('#peer_reviewer_2') ) && $('#PR_twitter_handle_2').val() === '' ) {
-            $('#publish').prop('disabled', false);
-        }
-        // If none are empty in 1 or 2
-        else if ( !anyEmpty( $('#peer_reviewer_1') ) && !anyEmpty( $('#peer_reviewer_2') ) ) {
-            $('#publish').prop('disabled', false);
-        } else {
-            $('#publish').prop('disabled', true);
-        }
+        var reviewerRequires = $('#peer_reviewer_meta_box').find('.form-invalid');
+        var reviewerVisibleRows = $('#peer_reviewer_meta_box>.inside').children('div').not('.js-hide');
+        var reviewerPhotoFields = reviewerVisibleRows.find('.inserted_headshot');
 
-        if ( $('#coauthor_container>div').children().hasClass('form-invalid') || $('#peer_reviewer_1').children().hasClass('form-invalid') || $('#peer_reviewer_2').children().hasClass('form-invalid') ) {
+        var coauthorRequires = $('#coauthor_details').find('.form-invalid');
+        var coauthorVisibleRows = $('#coauthor_details').children('div').not('.js-hide');
+        var coauthorPhotoFields = coauthorVisibleRows.find('.inserted_headshot');
+
+        if ( coauthorRequires.length > 0 || reviewerRequires.length > 0 || coauthorPhotoFields.length !== coauthorVisibleRows.length || reviewerPhotoFields.length !== reviewerVisibleRows.length ) {
             $('#publish').prop('disabled', true);
+        } else {
+            $('#publish').prop('disabled', false);
         }
 
     }
 
     function emailCheck() {
 
-        if ( emailAddress1.val() !== '' ) {
-            if ( !isEmail(emailAddress1.val()) ) {
+        var emailFields = $('#peer_reviewer_meta_box, #coauthor_details').find('[id*="email"]');
+
+        var badEmailExists = false;
+
+        emailFields.each(function(){
+            if ( $(this).val() !== '' ) {
+                if ( !isEmail( $(this).val() ) ) {
+                    $(this).addClass('form-invalid');
+                    badEmailExists = true;
+                } else {
+                    $(this).removeClass('form-invalid');
+                }
+            }
+
+            if ( badEmailExists ) {
                 if ( $('#invalid-email-alert').hasClass('js-hide') ) {
                     $('#invalid-email-alert').removeClass('js-hide');
                 }
-                emailAddress1.addClass('form-invalid');
-                $('#publish').prop('disabled', true);
             } else {
-                if ( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() === '' || isEmail( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() ) ) {
+                if ( !$('#invalid-email-alert').hasClass('js-hide') ) {
                     $('#invalid-email-alert').addClass('js-hide');
                 }
-                emailAddress1.removeClass('form-invalid');
-                submitButtonGateway();
             }
-        }
-
-        if ( emailAddress2.val() !== '' ) {
-            if ( !isEmail(emailAddress2.val()) ) {
-                if ( $('#invalid-email-alert').hasClass('js-hide') ) {
-                    $('#invalid-email-alert').removeClass('js-hide');
-                }
-                emailAddress2.addClass('form-invalid');
-                $('#publish').prop('disabled', true);
-            } else {
-                if ( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() === '' || isEmail( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() ) ) {
-                    $('#invalid-email-alert').addClass('js-hide');
-                }
-                emailAddress2.removeClass('form-invalid');
-                submitButtonGateway();
-            }
-        }
-
+        });
+        return badEmailExists;
     }
 
     // HELPER FUNCTIONS
 
     function allEmpty( parent ) {
         var obj = '';
-        parent.children('.js-required').each(function() {
+        parent.find('.js-required').each(function() {
             obj += $(this).val();
         });
         return(obj === '');
@@ -127,7 +133,7 @@ jQuery(document).ready(function($) {
 
     function anyEmpty( parent ) {
         var obj = false;
-        parent.children('.js-required').each(function() {
+        parent.find('.js-required').each(function() {
             if ( $(this).val() === '' ) {
                 obj = true;
             }
@@ -141,98 +147,133 @@ jQuery(document).ready(function($) {
     }
 
 
+    /**
+     *  ADD SECOND REVIEWER BUTTON
+     */
+
+    // Toggle button handler
+    if ( $('#PR_first_name_2').val() !== '' ) {
+        $('#peer_reviewer_2').removeClass('js-hide');
+        $("button[name|='toggle_second_reviewer']").addClass('js-hide');
+    }
+
+
+    $("button[name|='toggle_second_reviewer']").click(function(event) {
+
+       $(this).hide();
+       $('#peer_reviewer_2').removeClass('js-hide');
+
+    });
+
 
     /**
      * FUNCTIONS TO HANDLE COAUTHOR META BOX FIELDS
      */
 
-     $.each([coauthor_2_first_name, coauthor_2_first_name, coauthor_2_first_name], function() {
-         if ( $(this).val() !== '' ) {
-             $(this).parent().removeClass('js-hide');
-         }
-     });
+    var clickIterator = 2;
+
+     // SHOW COAUTHOR SECTIONS IF THEY ARE FILLED OUT
+    $.each([$('#coauthor_2_div'), $('#coauthor_3_div'), $('#coauthor_4_div')], function() {
+        if ( $(this).find('[id$="_first_name"]').val() !== '' ) {
+            $(this).removeClass('js-hide');
+            clickIterator++;
+        }
+    });
+
+    // AFTER ALL COAUTHORS SHOWN, DISABLE ADD BUTTON
+    $('.inside').on('click', '#add_coauthor', function(){
+        if (clickIterator < 5) {
+            $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
+            $('#add_coauthor').prop('disabled', true);
+            clickIterator++;
+        }
+    });
 
 
-     var clickIterator = 2;
-
-     $('.inside').on('click', '#add_coauthor', function(){
-
-         if (clickIterator < 4) {
-             $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
-             requireRow($('#coauthor_' + clickIterator + '_div'));
-             clickIterator++;
-         } else if (clickIterator == 4) {
-             $('#coauthor_' + clickIterator + '_div').removeClass('js-hide');
-             $('#add_coauthor').prop('disabled', true);
-         }
-
-     });
-
-     // Toggle button handler
-     if ( $('#PR_first_name_2').val() !== '' ) {
-         $('#peer_reviewer_2').removeClass('js-hide');
-         $("button[name|='toggle_second_reviewer']").addClass('js-hide');
-     }
+    //////////////////////////////////////////////
+    // ----------COAUTHOR FIELD LOGIC---------- //
+    //////////////////////////////////////////////
 
 
-     $("button[name|='toggle_second_reviewer']").click(function(event) {
+    var allFields = $('#coauthor_details').find('input, textarea');
 
-        $(this).hide();
-        $('#peer_reviewer_2').removeClass('js-hide');
+    allFields.each(function(){
+        $(this).change(function() {
+            coauthorRequiredStatus();
+            addCoauthorHandler();
+            emailCheck();
+            submitButtonGateway();
+        });
+    });
 
-     });
+    $('.photo_container').bind('DOMSubtreeModified', function() {
+        coauthorRequiredStatus();
+        addCoauthorHandler();
+        emailCheck();
+        submitButtonGateway();
+    });
 
-     //////////////////////////////////////////////
-     // ----------COAUTHOR FIELD LOGIC---------- //
-     //////////////////////////////////////////////
 
-     $('#coauthor_container>div>.js-required').each(function(){
-         $(this).change(function(){
-             requireRow($(this).parent());
-         });
-     });
+    function coauthorRequiredStatus() {
 
-     function requireRow( parent ) {
+        $('#coauthor_details').children().not('.js-hide').each(function(){
 
-         if ( !allEmpty( parent ) ) {
-             parent.children('.js-required').each(function(){
-                 if ( $(this).val() === '' ) {
-                     $(this).addClass("form-invalid");
-                     $('#publish').prop('disabled', true);
-                     $('#add_coauthor').prop('disabled', true);
-                 } else {
-                     $(this).removeClass('form-invalid');
-                     submitButtonGateway();
-                 }
-             });
-             if ( parent.children('input:nth-of-type(3)') !== ''  ) {
-                  $('#add_coauthor').prop('disabled', true);
-             }
-         } else {
-             parent.children('.js-required').removeClass('form-invalid');
-             submitButtonGateway();
-             $('#add_coauthor').prop('disabled', true);
-         }
+            var allFieldsEmpty = true;
+            $(this).find('.js-required').each(function(){
+                if ( $(this).val() !== '' ) {
+                    allFieldsEmpty = false;
+                    return false;
+                }
+            });
 
-         if ( anyEmpty( parent ) === false & isEmail( parent.children('input:nth-of-type(3)').val() ) ) {
-             $('#add_coauthor').prop('disabled', false);
-         }
+            if ( !allFieldsEmpty ) {
+                $(this).find('.js-required').each(function(){
+                    if ( $(this).val() === '' ) {
+                        $(this).addClass('form-invalid');
+                    } else {
+                        $(this).removeClass('form-invalid');
+                    }
 
-         if ( $('#coauthor_container').children('.js-hide').length === 0 ) {
-             $('#add_coauthor').prop('disabled', true);
-         }
+                });
+            } else {
+                $(this).find('.js-required').removeClass('form-invalid');
+            }
 
-         if ( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() !== '' & !isEmail( $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').val() ) ) {
-             $('#invalid-email-alert').removeClass('js-hide');
-             $('#coauthor_container div:not(.js-hide):last').children('input:nth-of-type(3)').addClass('form-invalid');
-         } else {
-             $('#invalid-email-alert').addClass('js-hide');
-             emailCheck();
-         }
+        });
 
-         submitButtonGateway();
+    }
 
-     }
+
+    // HANDLER FOR ADD COAUTHOR BUTTON
+    function addCoauthorHandler(){
+
+        var disableButton = false;
+        var visibleRows = $('#coauthor_details').children('div').not('.js-hide');
+        var photoFields = visibleRows.find('.inserted_headshot');
+        var badEmail = emailCheck();
+
+        $('#coauthor_details').children().not('.js-hide').find('.js-required').each(function(){
+            if ( $(this).val() === '' ) {
+                disableButton = true;
+                return false;
+            }
+        });
+
+        $('#coauthor_details').children().not('.js-hide').find('[id$="_url"]').each(function(){
+            if ( $(this).val() === '' || $(this).siblings('[id^="SF_photo_"]').is('button') ) {
+                disableButton = true;
+                return false;
+            }
+        });
+
+        if ( disableButton || photoFields.length < visibleRows.length || clickIterator > 4 || badEmail ) {
+            $('#add_coauthor').prop('disabled', true);
+        } else {
+            $('#add_coauthor').prop('disabled', false);
+        }
+
+    }
+
 
 
 });

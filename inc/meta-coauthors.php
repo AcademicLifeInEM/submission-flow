@@ -4,15 +4,20 @@
     <div id="coauthor_container" class="flex-container">
 
         <!-- BEGIN INSIDE LEFT TOPMOST CONTAINER -->
-        <div class="flex-container-vertical flex-box">
+        <div class="flex-container-vertical flex-box" id="coauthor_details">
 
             <!-- BEGIN COAUTHOR ROW CONTAINER 1 -->
             <div id="coauthor_1_div" class="flex-container flex-box">
 
-                <!-- Add Photo BUTTON -->
-                <div class="flex-container-vertical flex-box-buttons">
-                    <input type="hidden" id="SF_photo_3_url" value="">
-                    <button type="button" id="SF_photo_3">Add Photo</button>
+                <!-- Upload Photo BUTTON -->
+                <div class="flex-container-vertical flex-box-buttons photo_container">
+                    <input type="hidden" id="SF_photo_3_url" name="SF_photo_3_url" value="<?php echo( ( $coauthor_1_first_name === '' ? '' : urldecode($SF_photo_3_url) ) ); ?>">
+                    <?php if ( $SF_photo_3_url === '' || $SF_photo_3_url === NULL || $coauthor_1_first_name === '' ) {
+                        echo '<button type="button" id="SF_photo_3">Upload Photo</button>';
+                    } else {
+                        echo '<div id="SF_photo_3" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_3_url ) . '\')"><div></div></div>';
+                    }
+                    ?>
                 </div>
 
                 <!-- INPUT FIELDS -->
@@ -45,8 +50,10 @@
                 </div>
 
                 <!-- CREDENTIALS AREA -->
-                <div class="flex-container-vertical flex-box">
+                <div class="flex-container-vertical flex-box-minimal">
                     <label for="coauthor_1_credentials" style="text-align: center;">Credentials</label>
+                </div>
+                <div class="flex-container flex-box">
                     <textarea style="width:100%;" height="100%" class="js-required" placeholder="(title, institution, etc.)" name="coauthor_1_credentials"><?php echo( parse_html_chars( $coauthor_1_credentials ) ); ?></textarea>
                 </div>
 
@@ -55,14 +62,19 @@
 
 
             <!-- BEGIN COAUTHOR ROW CONTAINER 2 -->
-            <div class="js-hide" id="coauthor_2_div">
+            <div class="js-hide alternate" id="coauthor_2_div">
 
                 <div class="flex-container flex-box">
 
-                    <!-- Add Photo BUTTON -->
-                    <div class="flex-container-vertical flex-box-buttons">
-                        <input type="hidden" id="SF_photo_4_url" value="">
-                        <button type="button" id="SF_photo_4">Add Photo</button>
+                    <!-- Upload Photo BUTTON -->
+                    <div class="flex-container-vertical flex-box-buttons photo_container">
+                        <input type="hidden" id="SF_photo_4_url" name="SF_photo_4_url" value="<?php echo( ( $coauthor_2_first_name === '' ? '' : urldecode($SF_photo_4_url) ) ); ?>">
+                        <?php if ( $SF_photo_4_url === '' || $SF_photo_4_url === NULL || $coauthor_2_first_name === '' ) {
+                            echo '<button type="button" id="SF_photo_4">Upload Photo</button>';
+                        } else {
+                            echo '<div id="SF_photo_4" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_4_url ) . '\')"><div></div></div>';
+                        }
+                        ?>
                     </div>
 
                     <!-- INPUT FIELDS -->
@@ -95,8 +107,10 @@
                     </div>
 
                     <!-- CREDENTIALS AREA -->
-                    <div class="flex-container-vertical flex-box">
+                    <div class="flex-container-vertical flex-box-minimal">
                         <label for="coauthor_2_credentials" style="text-align: center;">Credentials</label>
+                    </div>
+                    <div class="flex-container flex-box">
                         <textarea style="width:100%;" height="100%" class="js-required" placeholder="(title, institution, etc.)" name="coauthor_2_credentials"><?php echo( parse_html_chars( $coauthor_2_credentials ) ); ?></textarea>
                     </div>
 
@@ -110,10 +124,15 @@
             <div class="js-hide" id="coauthor_3_div">
                 <div class="flex-container flex-box">
 
-                    <!-- Add Photo BUTTON -->
-                    <div class="flex-container-vertical flex-box-buttons">
-                        <input type="hidden" id="SF_photo_5_url" value="">
-                        <button type="button" id="SF_photo_5">Add Photo</button>
+                    <!-- Upload Photo BUTTON -->
+                    <div class="flex-container-vertical flex-box-buttons photo_container">
+                        <input type="hidden" id="SF_photo_5_url" name="SF_photo_5_url" value="<?php echo( ( $coauthor_3_first_name === '' ? '' : urldecode($SF_photo_5_url) ) ); ?>">
+                        <?php if ( $SF_photo_5_url === '' || $SF_photo_5_url === NULL || $coauthor_3_first_name === '' ) {
+                            echo '<button type="button" id="SF_photo_5">Upload Photo</button>';
+                        } else {
+                            echo '<div id="SF_photo_5" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_5_url ) . '\')"><div></div></div>';
+                        }
+                        ?>
                     </div>
 
                     <!-- INPUT FIELDS -->
@@ -146,8 +165,10 @@
                     </div>
 
                     <!-- CREDENTIALS AREA -->
-                    <div class="flex-container-vertical flex-box">
+                    <div class="flex-container-vertical flex-box-minimal">
                         <label for="coauthor_3_credentials" style="text-align: center;">Credentials</label>
+                    </div>
+                    <div class="flex-container flex-box">
                         <textarea style="width:100%;" height="100%" class="js-required" placeholder="(title, institution, etc.)" name="coauthor_3_credentials"><?php echo( parse_html_chars( $coauthor_3_credentials ) ); ?></textarea>
                     </div>
 
@@ -158,13 +179,19 @@
 
 
             <!-- BEGIN COAUTHOR ROW CONTAINER 4 -->
-            <div class="js-hide" id="coauthor_4_div">
+            <div class="js-hide alternate" id="coauthor_4_div">
+
                 <div class="flex-container flex-box">
 
-                    <!-- Add Photo BUTTON -->
-                    <div class="flex-container-vertical flex-box-buttons">
-                        <input type="hidden" id="SF_photo_6_url" value="">
-                        <button type="button" id="SF_photo_6">Add Photo</button>
+                    <!-- Upload Photo BUTTON -->
+                    <div class="flex-container-vertical flex-box-buttons photo_container">
+                        <input type="hidden" id="SF_photo_6_url" name="SF_photo_6_url" value="<?php echo( ( $coauthor_4_first_name === '' ? '' : urldecode($SF_photo_6_url) ) ); ?>">
+                        <?php if ( $SF_photo_6_url === '' || $SF_photo_6_url === NULL || $coauthor_4_first_name === '' ) {
+                            echo '<button type="button" id="SF_photo_6">Upload Photo</button>';
+                        } else {
+                            echo '<div id="SF_photo_6" class="inserted_headshot has_hover" style="background-image: url(\'' . urldecode( $SF_photo_6_url ) . '\')"><div></div></div>';
+                        }
+                        ?>
                     </div>
 
                     <!-- INPUT FIELDS -->
@@ -197,8 +224,10 @@
                     </div>
 
                     <!-- CREDENTIALS AREA -->
-                    <div class="flex-container-vertical flex-box">
+                    <div class="flex-container-vertical flex-box-minimal">
                         <label for="coauthor_4_credentials" style="text-align: center;">Credentials</label>
+                    </div>
+                    <div class="flex-container flex-box">
                         <textarea style="width:100%;" height="100%" class="js-required" placeholder="(title, institution, etc.)" name="coauthor_4_credentials"><?php echo( parse_html_chars( $coauthor_4_credentials ) ); ?></textarea>
                     </div>
 
@@ -210,9 +239,9 @@
         </div>
         <!-- END INSIDE LEFT TOPMOST CONTAINER -->
 
-        <!-- RIGHTMOST FLEXBOX ~~ ADD ANOTHER BUTTON -->
-        <div class="flex-box-minimal flex-box-add">
-            <input type="button" class="button-secondary" name="add_coauthor" id="add_coauthor" value="Add Another">
+        <!-- RIGHTMOST FLEXBOX -->
+        <div class="flex-box-add">
+            <input type="button" class="button-secondary" name="add_coauthor" id="add_coauthor" value="+">
         </div>
 
     </div>

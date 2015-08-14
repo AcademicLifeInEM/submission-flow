@@ -12,6 +12,19 @@
 /**
  * COAUTHOR FLEXBOXES
  */
+
+#coauthor_meta_box > div.inside {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding: 0;
+}
+
+#coauthor_container {
+    margin: 0;
+    padding: 0;
+}
+
 /***********CONTAINERS************/
 .flex-container {
     display: flex;
@@ -24,13 +37,19 @@
 
 .flex-container-vertical .flex-box {
     flex-basis: 50%;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+#coauthor_container > div > div {
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 /**************BOXES**************/
 .flex-box {
-    padding-left: 3px;
-    padding-right: 3px;
     flex: auto;
+    margin: 0;
 }
 
 .flex-box textarea {
@@ -42,16 +61,23 @@
     flex-basis: content;
     justify-content: space-around;
     align-items: flex-end;
+    padding-left: 10px;
+    padding-right: 5px;
 }
 
 .flex-box-buttons {
     align-self: center;
-    margin-left: -10px;
     margin-right: 3px;
+    padding-left: 10px;
+    flex-basis: 120px;
 }
 
 .flex-box-add {
     align-self: flex-end;
+    flex-basis: contain;
+    margin-bottom: 7px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 /**
@@ -111,24 +137,24 @@
     background-position: center;
 }
 
-#SF_photo_1.inserted_headshot:hover,
-#SF_photo_2.inserted_headshot:hover,
-#SF_photo_3.inserted_headshot:hover,
-#SF_photo_4.inserted_headshot:hover,
-#SF_photo_5.inserted_headshot:hover,
-#SF_photo_6.inserted_headshot:hover {
+#SF_photo_1.has_hover:hover,
+#SF_photo_2.has_hover:hover,
+#SF_photo_3.has_hover:hover,
+#SF_photo_4.has_hover:hover,
+#SF_photo_5.has_hover:hover,
+#SF_photo_6.has_hover:hover {
     background-color: rgba(0,0,0,0.3);
     background-blend-mode: overlay;
     transition: 0.4s;
     cursor: pointer;
 }
 
-#SF_photo_1.inserted_headshot:hover div,
-#SF_photo_2.inserted_headshot:hover div,
-#SF_photo_3.inserted_headshot:hover div,
-#SF_photo_4.inserted_headshot:hover div,
-#SF_photo_5.inserted_headshot:hover div,
-#SF_photo_6.inserted_headshot:hover div {
+#SF_photo_1.has_hover:hover div,
+#SF_photo_2.has_hover:hover div,
+#SF_photo_3.has_hover:hover div,
+#SF_photo_4.has_hover:hover div,
+#SF_photo_5.has_hover:hover div,
+#SF_photo_6.has_hover:hover div {
     visibility: visible;
 }
 
