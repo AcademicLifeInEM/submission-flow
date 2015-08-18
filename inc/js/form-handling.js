@@ -30,6 +30,7 @@ jQuery(document).ready(function($) {
             requiredInputStatus();
             emailCheck();
             submitButtonGateway();
+            buttonGateway();
         });
     });
     $.each([firstName2, lastName2, emailAddress2, credentials2, twitterHandle2], function( index, item ){
@@ -44,6 +45,7 @@ jQuery(document).ready(function($) {
         coauthorRequiredStatus();
         addCoauthorHandler();
         emailCheck();
+        buttonGateway();
         submitButtonGateway();
     });
 
@@ -87,6 +89,34 @@ jQuery(document).ready(function($) {
         } else {
             $('#publish').prop('disabled', false);
         }
+
+    }
+
+    function buttonGateway() {
+
+        $('#SF_photo_1, #SF_photo_2, #SF_photo_3, #SF_photo_4, #SF_photo_5, #SF_photo_6, #SF_photo_7').each(function(){
+            var theParent = $(this).parent().parent();
+            var hasInvalid = theParent.find('.form-invalid').length;
+
+            var allFilled = true;
+            theParent.find('.js-required').each(function(){
+
+                if ( $(this).val() === '' ) {
+                    allFilled = false;
+                    return false;
+                }
+
+            });
+
+            if ( hasInvalid > 0 && $(this).hasClass('inserted_headshot') === false ) {
+                $(this).addClass('button-required');
+            } else if ( allFilled && $(this).hasClass('inserted_headshot') === false ) {
+                $(this).addClass('button-required');
+            } else {
+                $(this).removeClass('button-required');
+            }
+
+        });
 
     }
 
@@ -223,6 +253,7 @@ jQuery(document).ready(function($) {
             coauthorRequiredStatus();
             addCoauthorHandler();
             emailCheck();
+            buttonGateway();
             submitButtonGateway();
         });
     });
@@ -231,6 +262,7 @@ jQuery(document).ready(function($) {
         coauthorRequiredStatus();
         addCoauthorHandler();
         emailCheck();
+        buttonGateway();
         submitButtonGateway();
     });
 
@@ -305,5 +337,6 @@ jQuery(document).ready(function($) {
     submitButtonGateway();
     addCoauthorHandler();
     coauthorRequiredStatus();
+    buttonGateway();
 
 });
