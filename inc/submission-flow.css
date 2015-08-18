@@ -73,22 +73,22 @@
 #first_fields_2,
 #first_fields_3,
 #first_fields_4 {
-    /*flex-wrap: nowrap;*/
+
 }
 
 #second_fields_1,
 #second_fields_2,
 #second_fields_3,
 #second_fields_4 {
-    /*flex-wrap: nowrap;*/
+
 }
 
 #credentials_column_1,
 #credentials_column_2,
 #credentials_column_3,
 #credentials_column_4 {
-    flex-wrap: wrap;
-    flex-grow: 3;
+    padding-top: 2px;
+    margin-left: 10px;
 }
 
 /**************BOXES**************/
