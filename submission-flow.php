@@ -117,7 +117,6 @@ $copyeditor_email_list = array(
 //                             ]
 //                         );
 
-
 // Enqueue Javascript
 function enqueue_plugin_scripts() {
 
@@ -125,6 +124,16 @@ function enqueue_plugin_scripts() {
     wp_enqueue_style( 'submission-flow-css' );
 
     if ( current_user_can( 'subscriber' ) ) {
+
+        // Enqueue javascript to hide profile items
+        $the_current_url = "http://" . $_SERVER['HTTP_HOST']  . $_SERVER['REQUEST_URI'];
+        if ( $the_current_url == get_edit_profile_url() ) {
+
+            wp_register_script('profile-hide', plugins_url( 'inc/js/profile-hide.js', __FILE__ ), array( 'jquery' ) );
+            wp_enqueue_script( 'profile-hide' );
+
+        }
+
         /** Register scripts */
         wp_register_script('dashboard-hide', plugins_url( 'inc/js/dashboard-hide.js', __FILE__ ), array( 'jquery' ) );
         wp_register_script('form-handler', plugins_url( 'inc/js/form-handling.js', __FILE__ ), array( 'jquery' ) );
