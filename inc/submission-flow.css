@@ -2,6 +2,11 @@
     display: none !important;
 }
 
+.form-invalid {
+    box-shadow: inset 0 0 3px #298cba !important;
+    border-color: #1b607f !important;
+}
+
 .fancy-textarea {
     overflow: auto;
     resize: vertical;
@@ -10,7 +15,8 @@
 }
 
 .button-required {
-    box-shadow: #F0AEA4 0 0 0 2px !important
+    box-shadow: 0 0 3px #1b607f !important;
+    border-color: #1b607f !important;
 }
 
 /**

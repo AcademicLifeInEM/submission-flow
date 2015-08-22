@@ -1,4 +1,4 @@
-<div class="error form-invalid js-hide" id="invalid-email-alert"><strong>Error:</strong> Please enter a valid email address.</div>
+<div class="error js-hide" id="invalid-email-alert"><strong>Error:</strong> Please enter a valid email address.</div>
 
     <!-- BEGIN GLOBAL OUTSIDE CONTAINER -->
     <div id="coauthor_container" class="flex-container">
