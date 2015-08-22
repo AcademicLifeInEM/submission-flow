@@ -24,6 +24,7 @@ jQuery(document).ready(function($) {
     $('#misc-publishing-actions > div.misc-pub-section.misc-yoast.misc-pub-section-last').hide();
     $('#visibility').hide();
     $('#titlediv > .inside').hide();
+    $('#wp-admin-bar-smof_options').hide();
 
 
     /**
