@@ -15,6 +15,18 @@ jQuery(document).ready(function($) {
 
     $('.form-table:nth-of-type(5), .form-table:nth-of-type(5) *').not('tr:nth-of-type(1), tr:nth-of-type(n+4)').removeClass('js-hide');
 
+    $('#your-profile > table:nth-child(13)').find('*').removeClass('js-hide');
 
+    $('#your-profile > h3:nth-child(14)').removeClass('js-hide');
+
+    $('#your-profile > table:nth-child(15) > tbody > tr:nth-child(2)').find('*').removeClass('js-hide');
+
+    $('#your-profile > table:nth-child(15), #your-profile > table:nth-child(15) > tbody, #your-profile > table:nth-child(15) > tbody > tr:nth-child(2)').removeClass('js-hide');
+
+    $('#your-profile > table:nth-child(15) > tbody > tr:nth-child(3)').removeClass('js-hide');
+    $('#your-profile > table:nth-child(15) > tbody > tr:nth-child(3)').find('*').removeClass('js-hide');
+
+    $('#your-profile > p.submit').removeClass('js-hide');
+    $('#your-profile > p.submit').find('*').removeClass('js-hide');
 
 });
