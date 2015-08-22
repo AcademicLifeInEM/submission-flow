@@ -38,84 +38,48 @@
  */
 
 $submission_editor_email = 'dereksifford@gmail.com';
-// Testing purposes
 $copyeditor_email_list = array(
                             [
+                                'name'  => 'Dr. Michelle Lin',
+                                'email' => 'mlin@aliem.com',
+                            ],
+                            [
                                 'name'  => 'Dr. Bryan Hayes',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'bryanhayes13@gmail.com',
                             ],
                             [
                                 'name'  => 'Dr. Teresa Chan',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'teresamchan@gmail.com',
                             ],
                             [
                                 'name'  => 'Dr. Howie Mell',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'howie.mell@gmail.com',
                             ],
                             [
                                 'name'  => 'Dr. Nikita Joshi',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'njoshi@aliem.com',
                             ],
                             [
                                 'name'  => 'Dr. Sameed Shaikh',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'samshaikh@gmail.com',
                             ],
                             [
                                 'name'  => 'Dr. Matt Zuckerman',
-                                'email' => 'dereksifford@gmail.com',
-                            ],
-                            [
-                                'name'  => 'Dr. Michelle Lin',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'mzuckerm@gmail.com',
                             ],
                             [
                                 'name'  => 'Dr. Matthew Klein',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'matthew.richard.klein@gmail.com',
                             ],
                             [
                                 'name'  => 'Dr. Alissa Mussell',
-                                'email' => 'dereksifford@gmail.com',
+                                'email' => 'r.alissa.mussell@gmail.com',
+                            ],
+                            [
+                                'name' => 'Dr. Salim Rezaie',
+                                'email' => 'srrezaie@gmail.com',
                             ]
                         );
-
-// $copyeditor_email_list = array(
-//                             [
-//                                 'name'  => 'Dr. Bryan Hayes',
-//                                 'email' => 'bryanhayes13@gmail.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Teresa Chan',
-//                                 'email' => 'teresamchan@gmail.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Howie Mell',
-//                                 'email' => 'howie.mell@gmail.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Nikita Joshi',
-//                                 'email' => 'njoshi@aliem.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Sameed Shaikh',
-//                                 'email' => 'samshaikh@gmail.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Matt Zuckerman',
-//                                 'email' => 'mzuckerm@gmail.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Michelle Lin',
-//                                 'email' => 'mlin@aliem.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Matthew Klein',
-//                                 'email' => 'matthew.richard.klein@gmail.com',
-//                             ],
-//                             [
-//                                 'name'  => 'Dr. Alissa Mussell',
-//                                 'email' => 'r.alissa.mussell@gmail.com',
-//                             ]
-//                         );
 
 // Enqueue Javascript
 function enqueue_plugin_scripts() {
