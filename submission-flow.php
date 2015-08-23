@@ -446,6 +446,7 @@ function draft_submitted_by_author( $post ) {
         $updated_post = array(
             'ID' => $post->ID,
             'post_parent' => $submission_page->ID,
+            'comment_status' => 'open',
             'post_content' => $updated_content,
         );
         wp_update_post( $updated_post );
