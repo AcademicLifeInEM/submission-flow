@@ -4,6 +4,9 @@ jQuery(document).ready(function($) {
     $('#add_coauthor').removeClass('button-secondary').addClass('js-hide');
     $('#peer_reviewer_meta_box').find('button').remove();
 
+    // TOGGLE DISABLED STATE ON COAUTHOR DETAIL BOXES
+    $('#coauthor_meta_box').find('input, textarea').prop('disabled', true);
+
     // REMOVE HOVER EFFECT ON IMAGES;
     $('#peer_reviewer_meta_box').find('.has_hover').removeClass('has_hover');
     $('#coauthor_details').find('.has_hover').removeClass('has_hover');
