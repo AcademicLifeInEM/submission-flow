@@ -1,8 +1,8 @@
 jQuery(document).ready(function($) {
 
     // HIDE ADD REVIEWER & ADD COPYEDITOR BUTTONS
-    $('button[name|="toggle_second_reviewer"]').addClass('js-hide');
     $('#add_coauthor').removeClass('button-secondary').addClass('js-hide');
+    $('#peer_reviewer_meta_box').find('button').remove();
 
     // REMOVE HOVER EFFECT ON IMAGES;
     $('#peer_reviewer_meta_box').find('.has_hover').removeClass('has_hover');
@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
     // HIDE EMPTY COPYEDITOR / PEER REVIEWER FIELDS
     $.each([$('#coauthor_2_first_name'), $('#coauthor_3_first_name'), $('#coauthor_4_first_name')], function(){
         if ( $(this).val() !== '') {
-            $(this).parent().removeClass('js-hide');
+            $(this).closest('[id$=_div]').removeClass('js-hide');
         }
     });
     if ( $('#coauthor_1_first_name').val() === '' ) {
