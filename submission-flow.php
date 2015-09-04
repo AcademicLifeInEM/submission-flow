@@ -608,6 +608,8 @@ function draft_published_by_copyeditor() {
                    "<p>Greetings!,</p>" .
                    "<p>This message is to inform you that your draft, <a href='" . $post->guid . "'>" . $post->post_title . "</a>, " .
                    "has cleared the copyedit stage and has been sent to your reviewer(s) for peer review.</p>" .
+                   "<p>At your convienience, please address any questions or concerns from the Copyeditor. As a reminder, " .
+                   "you still have full edit-access to the page. We encourage you to make any corrections or adjustments that you deem necessary.</p>" .
                    "<p>To receive notifications of any reviews or comments, please navigate to the " .
                    "published draft page using the link above and 'star' the Disqus feed below the draft. " .
                    "All further communication will take place via this comment feed.</p>" .
