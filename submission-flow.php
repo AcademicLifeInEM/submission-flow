@@ -37,7 +37,15 @@
  * ADD COPYEDITORS' EMAIL ADDRESSES TO THE BELOW LIST
  */
 
-$submission_editor_email = 'dereksifford@gmail.com';
+// DEBUG VARIABLE 
+// $copyeditor_email_list = array(
+//     [
+//         'name' => 'Derek Sifford',
+//         'email' => 'dereksifford@gmail.com'
+//     ]
+// );
+
+$submission_editor_email = 'submission@aliem.com';
 $copyeditor_email_list = array(
                             [
                                 'name'  => 'Dr. Michelle Lin',
@@ -663,6 +671,15 @@ function finalize_submission( $post ) {
         // COLLECT PEER REVIEWER INFO AND THEN SET IT AS PEER REVIEWER BOX POSTMETA
         $post_meta = get_post_custom( $post->ID );
 
+        // COLLECT LIST OF COMMENTS FOR THE SUBMISSION DRAFT
+        $comment_string = '****** Don\'t forget to cut and paste the reviews/comments below to the appropriate places! ****** <br><br><br> ';
+        $comments = get_comments( array( 'post_id' => $post->ID ) );
+        foreach ($comments as $comment) {
+            $comment_string .= '----------------------------' . $comment->comment_author . ' (' . $comment->comment_date . ')----------------------------<br>' .
+                                $comment->comment_content .
+                                '<br>----------------------------END COMMENT----------------------------<br><br>';
+        };
+
         for ( $i = 1; $i < 3; $i++ ) {
 
             ${'PR_first_name_' . $i} = $post_meta['PR_first_name_' . $i][0];
@@ -676,6 +693,7 @@ function finalize_submission( $post ) {
 
         // UPDATE PEER REVIEWER BOX META VALUES FOR POST
         update_post_meta( $post->ID, 'peer_review_box_heading_1', 'ALiEM Copyedit' );
+        update_post_meta( $post->ID, 'peer_review_content_1', $comment_string );
         update_post_meta( $post->ID, 'peer_review_box_heading_2', 'Expert Peer Review' );
         update_post_meta( $post->ID, 'reviewer_name_2', $PR_first_name_1 . ' ' . $PR_last_name_1 );
         update_post_meta( $post->ID, 'reviewer_twitter_2', $PR_twitter_handle_1 );
