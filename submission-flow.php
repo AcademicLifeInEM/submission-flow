@@ -52,10 +52,6 @@ $copyeditor_email_list = array(
                                 'email' => 'teresamchan@gmail.com',
                             ],
                             [
-                                'name'  => 'Dr. Howie Mell',
-                                'email' => 'howie.mell@gmail.com',
-                            ],
-                            [
                                 'name'  => 'Dr. Nikita Joshi',
                                 'email' => 'njoshi@aliem.com',
                             ],
