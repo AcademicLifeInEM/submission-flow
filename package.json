@@ -1,0 +1,23 @@
+{
+  "name": "submission-flow",
+  "version": "0.2.0",
+  "description": "Internal plugin to enhance new submission flow",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AcademicLifeInEM/submission-flow.git"
+  },
+  "author": "Derek P Sifford",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AcademicLifeInEM/submission-flow/issues"
+  },
+  "homepage": "https://github.com/AcademicLifeInEM/submission-flow#readme",
+  "devDependencies": {
+    "browser-sync": "^2.12.5",
+    "gulp": "github:gulpjs/gulp#4.0"
+  }
+}
