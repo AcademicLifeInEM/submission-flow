@@ -4,7 +4,8 @@
   "description": "Internal plugin to enhance new submission flow",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "wp": "wpcmd() { docker exec $(docker ps -lq) /bin/bash -c \"sudo -u www-data wp $(echo $@)\"; };wpcmd "
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,12 @@
   },
   "homepage": "https://github.com/AcademicLifeInEM/submission-flow#readme",
   "devDependencies": {
+    "autoprefixer": "^6.3.6",
     "browser-sync": "^2.12.5",
-    "gulp": "github:gulpjs/gulp#4.0"
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-stylus": "^2.4.0",
+    "gulp-uglify": "^1.5.3",
+    "poststylus": "^0.2.3"
   }
 }

@@ -19,14 +19,14 @@
  *   | || |  | |  __/| |_| |  _ < | |/ ___ \| |\  | | |
  *  |___|_|  |_|_|    \___/|_| \_\|_/_/   \_\_| \_| |_|
  *
- * NOTE: THIS PLUGIN DEPENDS ON THE MODIFICATION OF THE FOLLWOING PLUGINS:
+ * NOTE: THIS PLUGIN DEPENDS ON THE MODIFICATION OF THE FOLLOWING PLUGINS:
  *
  * 1) CO-AUTHORS PLUS:
- *    - COMMENT OUT LINES 1041-1049. (version: 3.1.1)
+ *    - COMMENT OUT LINES 1130-1139. (version: 3.2.1) (starts with comment below)
+ *    "// Allow users to always filter out certain users if needed (e.g. administrators)"
  * 2) FANCIEST AUTHOR BOX: (/includes/ts-fab-user-settings.php)
  *    - LINE 21: Comment out whole line
  *    - LINE 137: Comment out whole line ('<?php } // end if ?>')
- * 3) DEPENDENCY: TablePress -- Table with the title 'Staging Area: Blog Posts in Progress'
  */
 
 ////////////////////
@@ -37,78 +37,60 @@
  * ADD COPYEDITORS' EMAIL ADDRESSES TO THE BELOW LIST
  */
 
-// DEBUG VARIABLE 
-// $copyeditor_email_list = array(
+// DEBUG VARIABLE
+// $copyeditor_emails = array(
 //     [
 //         'name' => 'Derek Sifford',
-//         'email' => 'dereksifford@gmail.com'
+//         'email' => 'dereksifford@gmail.com',
+//         'slack' => 'U0976DHT4'
 //     ]
 // );
 
-$submission_editor_email = 'submission@aliem.com';
-$copyeditor_email_list = array(
+$SE_email = 'submission@aliem.com';
+$copyeditor_emails = array(
                             [
                                 'name'  => 'Dr. Michelle Lin',
                                 'email' => 'mlin@aliem.com',
+                                'slack' => 'U0975Q2L9',
                             ],
                             [
                                 'name'  => 'Dr. Bryan Hayes',
                                 'email' => 'bryanhayes13@gmail.com',
+                                'slack' => 'U0977REBC',
                             ],
                             [
                                 'name'  => 'Dr. Teresa Chan',
                                 'email' => 'teresamchan@gmail.com',
+                                'slack' => 'U09BA9NBC',
                             ],
                             [
                                 'name'  => 'Dr. Nikita Joshi',
                                 'email' => 'njoshi@aliem.com',
+                                'slack' => 'U097PKBB7',
                             ],
                             [
-                                'name'  => 'Dr. Sameed Shaikh',
-                                'email' => 'samshaikh@gmail.com',
-                            ],
-                            [
-                                'name'  => 'Dr. Matt Zuckerman',
-                                'email' => 'mzuckerm@gmail.com',
-                            ],
-                            [
-                                'name'  => 'Dr. Matthew Klein',
-                                'email' => 'matthew.richard.klein@gmail.com',
-                            ],
-                            [
-                                'name'  => 'Dr. Alissa Mussell',
-                                'email' => 'r.alissa.mussell@gmail.com',
-                            ],
-                            [
-                                'name' => 'Dr. Salim Rezaie',
-                                'email' => 'srrezaie@gmail.com',
+                                'name' => 'Dr. Fareen Zaver',
+                                'email' => 'Fzaver@gmail.com',
+                                'slack' => 'U097RKY2X',
                             ]
                         );
 
 // Enqueue Javascript
 function enqueue_plugin_scripts() {
 
-    wp_register_style( 'submission-flow-css', plugins_url( 'inc/submission-flow.css', __FILE__ ) );
-    wp_enqueue_style( 'submission-flow-css' );
+    wp_enqueue_style( 'submission-flow-css', plugins_url( 'inc/submission-flow.css', __FILE__ ) );
 
     if ( current_user_can( 'subscriber' ) ) {
 
         // Enqueue javascript to hide profile items
         $the_current_url = "http://" . $_SERVER['HTTP_HOST']  . $_SERVER['REQUEST_URI'];
         if ( $the_current_url == get_edit_profile_url() ) {
-
-            wp_register_script('profile-hide', plugins_url( 'inc/js/profile-hide.js', __FILE__ ), array( 'jquery' ) );
-            wp_enqueue_script( 'profile-hide' );
-
+            wp_enqueue_script('profile-hide', plugins_url( 'inc/js/profile-hide.js', __FILE__ ), array( 'jquery' ) );
         }
 
         /** Register scripts */
-        wp_register_script('dashboard-hide', plugins_url( 'inc/js/dashboard-hide.js', __FILE__ ), array( 'jquery' ) );
-        wp_register_script('form-handler', plugins_url( 'inc/js/form-handling.js', __FILE__ ), array( 'jquery' ) );
-
-        /** Enqueue scripts */
-        wp_enqueue_script( 'dashboard-hide' );
-        wp_enqueue_script( 'form-handler' );
+        wp_enqueue_script('dashboard-hide', plugins_url( 'inc/js/dashboard-hide.js', __FILE__ ), array( 'jquery' ) );
+        wp_enqueue_script('form-handler', plugins_url( 'inc/js/form-handling.js', __FILE__ ), array( 'jquery' ) );
 
         /** Register, localize, and enqueue media upload button scripts */
         wp_register_script('media-uploads', plugins_url( 'inc/js/media-uploads.js', __FILE__ ), array( 'jquery' ) );
@@ -119,44 +101,36 @@ function enqueue_plugin_scripts() {
             )
         );
         wp_enqueue_script( 'media-uploads' );
+        return;
 
-    } else {
+    }
 
-        global $post;
+    global $post;
 
-        $submission_page = get_page_by_title( 'New Submission' );
-        $parent_page = $post->post_parent;
+    $submission_page = get_page_by_title( 'New Submission' );
+    $parent_page = $post->post_parent;
 
-        if ( $parent_page == $submission_page->ID ) {
-
-            wp_register_script( 'copyeditor-views', plugins_url( 'inc/js/copyeditor-views.js', __FILE__ ), array( 'jquery' ) );
-            wp_enqueue_script( 'copyeditor-views' );
-
-        }
-
+    if ( $parent_page == $submission_page->ID ) {
+        wp_enqueue_script( 'copyeditor-views', plugins_url( 'inc/js/copyeditor-views.js', __FILE__ ), array( 'jquery' ) );
     }
 
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_plugin_scripts' );
 
+
 function enqueue_plugin_frontend_scripts() {
-    if ( current_user_can( 'subscriber' ) ) {
-        wp_register_script('frontend-hide', plugins_url( 'inc/js/frontend-hide.js', __FILE__ ), array( 'jquery' ) );
-        wp_enqueue_script( 'frontend-hide' );
-    }
+    if (current_user_can( 'subscriber' ))
+        wp_enqueue_script('frontend-hide', plugins_url( 'inc/js/frontend-hide.js', __FILE__ ), array( 'jquery' ) );
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_plugin_frontend_scripts' );
 
 
 // CUSTOMIZE CAPABILITIES FOR SUBSCRIBERS
 function adjust_subscriber_capabilities() {
-
     $role = get_role( 'subscriber' );
-
     $role->add_cap( 'edit_pages' );
     $role->add_cap( 'upload_files' );
     $role->add_cap( 'edit_published_pages' );
-
 }
 add_action( 'admin_init', 'adjust_subscriber_capabilities' );
 
@@ -184,248 +158,227 @@ add_action('pre_get_posts','users_own_attachments');
 //////////////////////////////////////
 
 
-/**
- * INSTANTIATE META BOXES
- */
+function call_submission_flow() {
 
-// Peer reviewer information meta box
-function peer_reviewer_meta_box() {
-
-    if ( current_user_can( 'subscriber' ) ) {
-        add_meta_box( 'peer_reviewer_meta_box', 'Expert Peer Reviewer Information', 'add_peer_reviewer_meta_box', 'page', 'side', 'high');
-    }
+    // TODO: Add current_user_can thing here
+    new SubmissionFlow();
 }
-add_action( 'add_meta_boxes', 'peer_reviewer_meta_box' );
 
-
-// Co-author meta box
-function coauthor_meta_box() {
-
-    if ( current_user_can( 'subscriber' ) ) {
-        add_meta_box( 'coauthor_meta_box', 'Co-author Details', 'add_coauthor_meta_box', 'page', 'advanced', 'high');
-    }
-}
-add_action( 'add_meta_boxes', 'coauthor_meta_box' );
-
-
-/**
- * ADD META BOXES TO PAGE EDIT SCREEN
- */
-
-// Peer reviewer information meta box
-function add_peer_reviewer_meta_box( $post ) {
-
-    wp_nonce_field( basename( __file__ ), 'submission_PR_info' );
-
-	$values = get_post_custom( $post->ID );
-
-    for ( $i = 1; $i < 3; $i++ ) {
-
-        ${'PR_first_name_' . $i} = $values['PR_first_name_' . $i][0];
-        ${'PR_last_name_' . $i} = $values['PR_last_name_' . $i][0];
-        ${'PR_email_' . $i} = $values['PR_email_' . $i][0];
-        ${'PR_twitter_handle_' . $i} = $values['PR_twitter_handle_' . $i][0];
-        ${'PR_credentials_' . $i} = $values['PR_credentials_' . $i][0];
-        ${'SF_photo_' . $i . '_url'} = $values['SF_photo_' . $i . '_url'][0];
-
-    }
-
-    require( 'inc/meta-peer-reviewer-info.php' );
-
+if (is_admin()) {
+    add_action('load-post.php', 'call_submission_flow');
+    add_action('load-post-new.php', 'call_submission_flow');
 }
 
 
-// Co-author meta box
-function add_coauthor_meta_box( $post ) {
+class SubmissionFlow {
 
-    wp_nonce_field( basename( __file__ ), 'submission_coauthors' );
-
-    $values = get_post_custom( $post->ID );
-
-    for ( $i = 1; $i < 5; $i++ ) {
-
-        ${'coauthor_' . $i . '_first_name'} = $values['coauthor_' . $i . '_first_name'][0];
-        ${'coauthor_' . $i . '_last_name'} = $values['coauthor_' . $i . '_last_name'][0];
-        ${'coauthor_' . $i . '_email'} = $values['coauthor_' . $i . '_email'][0];
-        ${'coauthor_' . $i . '_twitter'} = $values['coauthor_' . $i . '_twitter'][0];
-        ${'coauthor_' . $i . '_credentials'} = $values['coauthor_' . $i . '_credentials'][0];
-
-
+    public function __construct() {
+        add_action('add_meta_boxes', array($this, 'addMetaboxes'));
+        add_action('save_post', array($this, 'saveMeta'));
     }
 
-    for ( $i = 3; $i < 7; $i++ ) {
-        ${'SF_photo_' . $i . '_url'} = $values['SF_photo_' . $i . '_url'][0];
-    }
-
-    require( 'inc/meta-coauthors.php' );
-
-}
-
-/**
- * SAVE META BOX FIELDS TO DATABASE
- */
-// Peer review info meta box
-function save_peer_review_info_meta( $post_id ) {
-
-    $is_autosave = wp_is_post_autosave( $post_id );
-	$is_revision = wp_is_post_revision( $post_id );
-	$is_valid_nonce = ( isset( $_POST[ 'submission_PR_info' ] ) && wp_verify_nonce( $_POST[ 'submission_PR_info' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
-
-    if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
-			return;
-	}
-// FIXME: Long, drawn out if statements - make shorter
-    if ( isset( $_POST['PR_first_name_1']) ) {
-
-        update_post_meta( $post_id, 'PR_first_name_1',  $_POST['PR_first_name_1'] );
-        update_post_meta( $post_id, 'PR_last_name_1',  $_POST['PR_last_name_1'] );
-        update_post_meta( $post_id, 'PR_email_1',  $_POST['PR_email_1'] );
-        update_post_meta( $post_id, 'PR_credentials_1',  $_POST['PR_credentials_1'] );
-        update_post_meta( $post_id, 'SF_photo_1_url',  $_POST['SF_photo_1_url'] );
-        if ( isset( $_POST['PR_twitter_handle_1']) ) {
-            update_post_meta( $post_id, 'PR_twitter_handle_1',  $_POST['PR_twitter_handle_1'] );
+    public function addMetaboxes($postType) {
+        if ( $postType === 'page' ) {
+            add_meta_box(
+                'peer_reviewer_meta_box',
+                'Expert Peer Reviewer Information',
+                array($this, 'peerReviewerBox'),
+                'page',
+                'side',
+                'high'
+            );
+            add_meta_box(
+                'coauthor_meta_box',
+                'Co-author Details',
+                array($this, 'coauthorBox'),
+                'page',
+                'advanced',
+                'high'
+            );
         }
     }
 
-    if ( isset( $_POST['PR_first_name_2']) ) {
+    public function peerReviewerBox($post) {
+        wp_nonce_field( 'submission-flow-metaboxes', 'submission-flow-nonce' );
 
-        update_post_meta( $post_id, 'PR_first_name_2',  $_POST['PR_first_name_2'] );
-        update_post_meta( $post_id, 'PR_last_name_2',  $_POST['PR_last_name_2'] );
-        update_post_meta( $post_id, 'PR_email_2',  $_POST['PR_email_2'] );
-        update_post_meta( $post_id, 'PR_credentials_2',  $_POST['PR_credentials_2'] );
-        update_post_meta( $post_id, 'SF_photo_2_url',  $_POST['SF_photo_2_url'] );
-        if ( isset( $_POST['PR_twitter_handle_2']) ) {
-            update_post_meta( $post_id, 'PR_twitter_handle_2',  $_POST['PR_twitter_handle_2'] );
-        }
-    }
-
-}
-add_action( 'save_post', 'save_peer_review_info_meta' );
-
-// Co-author Details meta box
-function save_coauthor_details_meta( $post_id ) {
-
-    $is_autosave    = wp_is_post_autosave( $post_id );
-	$is_revision    = wp_is_post_revision( $post_id );
-	$is_valid_nonce = ( isset( $_POST[ 'submission_PR_info' ] ) && wp_verify_nonce( $_POST[ 'submission_PR_info' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
-
-    if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
-			return;
-	}
-
-    if ( current_user_can( 'subscriber' ) ) {
-
-        for ( $i = 1; $i < 5; $i++ ) {
-
-            if ( isset( $_POST['coauthor_' . $i . '_first_name'] ) ) {
-
-                update_post_meta( $post_id, 'coauthor_' . $i . '_first_name',  $_POST['coauthor_' . $i . '_first_name'] );
-                update_post_meta( $post_id, 'coauthor_' . $i . '_last_name',  $_POST['coauthor_' . $i . '_last_name'] );
-                update_post_meta( $post_id, 'coauthor_' . $i . '_email',  $_POST['coauthor_' . $i . '_email'] );
-                update_post_meta( $post_id, 'coauthor_' . $i . '_twitter',  $_POST['coauthor_' . $i . '_twitter'] );
-                update_post_meta( $post_id, 'coauthor_' . $i . '_credentials',  wpautop( $_POST['coauthor_' . $i . '_credentials'] ) );
-                update_post_meta( $post_id, 'SF_photo_' . ($i + 2) . '_url', urlencode( $_POST['SF_photo_' . ($i + 2) . '_url'] ) );
-
-            }
-
-            ///////////////////////////////////////
-            // ----- CREATE NEW USER LOGIC ----- //
-            ///////////////////////////////////////
-
-            $username = ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . '.' . preg_replace('/\s+/', '.', ucwords( $_POST['coauthor_' . $i . '_last_name'] ) );
-
-            /**
-             * IF  : the user does not already exist, then create a new user
-             * ELSE: update the existing user with the information provided
-             */
-
-            if ( get_user_by( 'email', strtolower( $_POST['coauthor_' . $i . '_email'] ) ) == '' && get_user_by( 'login', $username ) == '' ) {
-
-                // Corrects error where a user with the login '.' would be created
-                // FIXME: Error where a user with the login '.' would be created
-                if ($username == '.') {
-                    break;
-                }
-
-                $userdata = array(
-                    'user_pass' => 'ALiEMSubmissionUser',
-                    'user_login' => $username,
-                    'user_email' => $_POST['coauthor_' . $i . '_email'],
-                    'display_name' => ucwords( $_POST['coauthor_' . $i . '_first_name'] ) . ' ' . ucwords( $_POST['coauthor_' . $i . '_last_name'] ),
-                    'first_name' => ucwords( $_POST['coauthor_' . $i . '_first_name'] ),
-                    'last_name' => ucwords( $_POST['coauthor_' . $i . '_last_name'] ),
-                    'description' => $_POST['coauthor_' . $i . '_credentials'],
-                    'role' => 'subscriber',
-                );
-
-                $new_user_id = wp_insert_user( $userdata );
-                update_user_meta( $new_user_id, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
-                update_user_meta( $new_user_id, 'ts_fab_photo_url', $_POST['SF_photo_' . ($i + 2) . '_url'] );
-
-            } else {
-
-                $the_existing_user = get_user_by( 'email', strtolower( $_POST['coauthor_' . $i . '_email'] ) );
-
-                $userdata = array(
-                    'ID' => $the_existing_user->ID,
-                    'user_login' => $username,
-                    'description' => $_POST['coauthor_' . $i . '_credentials'],
-                );
-                wp_update_user( $userdata );
-                update_user_meta( $the_existing_user->ID, 'ts_fab_twitter', $_POST['coauthor_' . $i . '_twitter'] );
-                update_user_meta( $the_existing_user->ID, 'ts_fab_photo_url', $_POST['SF_photo_' . ($i + 2) . '_url'] );
-            }
-        }
-    }
-}
-add_action( 'save_post', 'save_coauthor_details_meta' );
-
-
-
-// DISPLAY META FOR COPYEDITORS
-function display_meta_for_copyeditors() {
-
-    global $post;
-
-    $submission_page = get_page_by_title( 'New Submission' );
-    $parent_page = $post->post_parent;
-
-
-    if ( $parent_page == $submission_page->ID ) {
-
-        $post_meta = get_post_custom( $post->ID );
+        $meta = json_decode(get_post_meta($post->ID, 'submission-flow', true), true);
 
         for ( $i = 1; $i < 3; $i++ ) {
 
-            ${'PR_first_name_' . $i} = $post_meta['PR_first_name_' . $i][0];
-            ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
-            ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
-            ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
-            ${'PR_credentials_' . $i} = $post_meta['PR_credentials_' . $i][0];
+            ${'PR_first_name_' . $i} = $meta['peer-reviewers']['PR_first_name_' . $i];
+            ${'PR_last_name_' . $i} = $meta['peer-reviewers']['PR_last_name_' . $i];
+            ${'PR_email_' . $i} = $meta['peer-reviewers']['PR_email_' . $i];
+            ${'PR_twitter_handle_' . $i} = $meta['peer-reviewers']['PR_twitter_handle_' . $i];
+            ${'PR_credentials_' . $i} = $meta['peer-reviewers']['PR_credentials_' . $i];
+            ${'SF_photo_' . $i . '_url'} = $meta['peer-reviewers']['SF_photo_' . $i . '_url'];
 
         }
 
+        require( 'inc/meta-peer-reviewer-info.php' );
+    }
+
+    public function coauthorBox($post) {
+        $meta = json_decode(get_post_meta($post->ID, 'submission-flow', true), true);
+
         for ( $i = 1; $i < 5; $i++ ) {
-
-            ${'coauthor_' . $i . '_first_name'} = $post_meta['coauthor_' . $i . '_first_name'][0];
-            ${'coauthor_' . $i . '_last_name'} = $post_meta['coauthor_' . $i . '_last_name'][0];
-            ${'coauthor_' . $i . '_email'} = $post_meta['coauthor_' . $i . '_email'][0];
-            ${'coauthor_' . $i . '_twitter'} = $post_meta['coauthor_' . $i . '_twitter'][0];
-            ${'coauthor_' . $i . '_credentials'} = $post_meta['coauthor_' . $i . '_credentials'][0];
-
-
+            ${'coauthor_' . $i . '_first_name'} = $meta['coauthors']['coauthor_' . $i . '_first_name'];
+            ${'coauthor_' . $i . '_last_name'} = $meta['coauthors']['coauthor_' . $i . '_last_name'];
+            ${'coauthor_' . $i . '_email'} = $meta['coauthors']['coauthor_' . $i . '_email'];
+            ${'coauthor_' . $i . '_twitter'} = $meta['coauthors']['coauthor_' . $i . '_twitter'];
+            ${'coauthor_' . $i . '_credentials'} = $meta['coauthors']['coauthor_' . $i . '_credentials'];
         }
 
         for ( $i = 3; $i < 7; $i++ ) {
-            ${'SF_photo_' . $i . '_url'} = $post_meta['SF_photo_' . $i . '_url'][0];
+            ${'SF_photo_' . $i . '_url'} = $meta['coauthors']['SF_photo_' . $i . '_url'];
         }
 
-        add_meta_box( 'peer_reviewer_meta_box', 'Expert Peer Reviewer Information', 'add_peer_reviewer_meta_box', 'page', 'side', 'high' );
-        add_meta_box( 'coauthor_meta_box', 'Co-author Details', 'add_coauthor_meta_box', 'page', 'advanced', 'high');
+        require( 'inc/meta-coauthors.php' );
     }
 
+    public function saveMeta($postId) {
+
+        $is_autosave = wp_is_post_autosave( $post_id );
+    	$is_revision = wp_is_post_revision( $post_id );
+    	$is_valid_nonce = (
+            isset($_POST[ 'submission-flow-nonce']) &&
+            wp_verify_nonce($_POST['submission-flow-nonce'], 'submission-flow-metaboxes')
+        ) ? true : false;
+
+        if ( $is_autosave || $is_revision || !$is_valid_nonce ) return;
+
+        $meta = array(
+            'peer-reviewers' => array(
+                'PR_first_name_1'     => isset($_POST['PR_first_name_1']) ? $_POST['PR_first_name_1'] : '',
+                'PR_last_name_1'      => isset($_POST['PR_last_name_1']) ? $_POST['PR_last_name_1'] : '',
+                'PR_email_1'          => isset($_POST['PR_email_1']) ? $_POST['PR_email_1'] : '',
+                'PR_credentials_1'    => isset($_POST['PR_credentials_1']) ? $_POST['PR_credentials_1'] : '',
+                'SF_photo_1_url'      => isset($_POST['SF_photo_1_url']) ? $_POST['SF_photo_1_url'] : '',
+                'PR_twitter_handle_1' => isset($_POST['PR_twitter_handle_1']) ? $_POST['PR_twitter_handle_1'] : '',
+                'PR_first_name_2'     => isset($_POST['PR_first_name_2']) ? $_POST['PR_first_name_2'] : '',
+                'PR_last_name_2'      => isset($_POST['PR_last_name_2']) ? $_POST['PR_last_name_2'] : '',
+                'PR_email_2'          => isset($_POST['PR_email_2']) ? $_POST['PR_email_2'] : '',
+                'PR_credentials_2'    => isset($_POST['PR_credentials_2']) ? $_POST['PR_credentials_2'] : '',
+                'SF_photo_2_url'      => isset($_POST['SF_photo_2_url']) ? $_POST['SF_photo_2_url'] : '',
+                'PR_twitter_handle_2' => isset($_POST['PR_twitter_handle_2']) ? $_POST['PR_twitter_handle_2'] : '',
+            ),
+            'coauthors' => array(
+                'coauthor_1_first_name'  => isset($_POST['coauthor_1_first_name']) ? $_POST['coauthor_1_first_name'] : '',
+                'coauthor_2_first_name'  => isset($_POST['coauthor_2_first_name']) ? $_POST['coauthor_2_first_name'] : '',
+                'coauthor_3_first_name'  => isset($_POST['coauthor_3_first_name']) ? $_POST['coauthor_3_first_name'] : '',
+                'coauthor_4_first_name'  => isset($_POST['coauthor_4_first_name']) ? $_POST['coauthor_4_first_name'] : '',
+                'coauthor_1_last_name'   => isset($_POST['coauthor_1_last_name']) ? $_POST['coauthor_1_last_name'] : '',
+                'coauthor_2_last_name'   => isset($_POST['coauthor_2_last_name']) ? $_POST['coauthor_2_last_name'] : '',
+                'coauthor_3_last_name'   => isset($_POST['coauthor_3_last_name']) ? $_POST['coauthor_3_last_name'] : '',
+                'coauthor_4_last_name'   => isset($_POST['coauthor_4_last_name']) ? $_POST['coauthor_4_last_name'] : '',
+                'coauthor_1_email'       => isset($_POST['coauthor_1_email']) ? $_POST['coauthor_1_email'] : '',
+                'coauthor_2_email'       => isset($_POST['coauthor_2_email']) ? $_POST['coauthor_2_email'] : '',
+                'coauthor_3_email'       => isset($_POST['coauthor_3_email']) ? $_POST['coauthor_3_email'] : '',
+                'coauthor_4_email'       => isset($_POST['coauthor_4_email']) ? $_POST['coauthor_4_email'] : '',
+                'coauthor_1_twitter'     => isset($_POST['coauthor_1_twitter']) ? $_POST['coauthor_1_twitter'] : '',
+                'coauthor_2_twitter'     => isset($_POST['coauthor_2_twitter']) ? $_POST['coauthor_2_twitter'] : '',
+                'coauthor_3_twitter'     => isset($_POST['coauthor_3_twitter']) ? $_POST['coauthor_3_twitter'] : '',
+                'coauthor_4_twitter'     => isset($_POST['coauthor_4_twitter']) ? $_POST['coauthor_4_twitter'] : '',
+                'coauthor_1_credentials' => isset($_POST['coauthor_1_credentials']) ? wpautop($_POST['coauthor_1_credentials']) : '',
+                'coauthor_2_credentials' => isset($_POST['coauthor_2_credentials']) ? wpautop($_POST['coauthor_2_credentials']) : '',
+                'coauthor_3_credentials' => isset($_POST['coauthor_3_credentials']) ? wpautop($_POST['coauthor_3_credentials']) : '',
+                'coauthor_4_credentials' => isset($_POST['coauthor_4_credentials']) ? wpautop($_POST['coauthor_4_credentials']) : '',
+                'SF_photo_3_url'         => isset($_POST['SF_photo_3_url']) ? urlencode($_POST['SF_photo_3_url']) : '',
+                'SF_photo_4_url'         => isset($_POST['SF_photo_4_url']) ? urlencode($_POST['SF_photo_4_url']) : '',
+                'SF_photo_5_url'         => isset($_POST['SF_photo_5_url']) ? urlencode($_POST['SF_photo_5_url']) : '',
+                'SF_photo_6_url'         => isset($_POST['SF_photo_6_url']) ? urlencode($_POST['SF_photo_6_url']) : '',
+            )
+        );
+
+        update_post_meta($postId, 'submission-flow', json_encode($meta));
+
+
+        for ($i = 1; $i < 5; $i++) {
+            if (empty($_POST['coauthor_' . $i . '_first_name'])) continue;
+
+            $firstname =  ucwords($_POST['coauthor_' . $i . '_first_name']);
+            $lastname = ucwords($_POST['coauthor_' . $i . '_last_name']);
+            $username = $firstname  . '.' . preg_replace('/\s+/', '.', $lastname);
+            $email = strtolower($_POST['coauthor_' . $i . '_email']);
+            $creds = $_POST['coauthor_' . $i . '_credentials'];
+            $twitter = $_POST['coauthor_' . $i . '_twitter'];
+            $photo = $_POST['SF_photo_' . ($i + 2) . '_url'];
+
+            if ( get_user_by( 'email', $email ) === '' ) {
+                $userdata = array(
+                    'user_pass'    => 'ALiEMSubmissionUser',
+                    'user_login'   => $username,
+                    'user_email'   => $email,
+                    'display_name' => $firstname . ' ' . $lastname,
+                    'first_name'   => $firstname,
+                    'last_name'    => $lastname,
+                    'description'  => $creds,
+                    'role'         => 'subscriber',
+                );
+                $new_user_id = wp_insert_user($userdata);
+                update_user_meta($new_user_id, 'ts_fab_twitter', $twitter);
+                update_user_meta($new_user_id, 'ts_fab_photo_url', $photo);
+                continue;
+            }
+
+            $the_existing_user = get_user_by('email', $email);
+            $userdata = array(
+                'ID' => $the_existing_user->ID,
+                'user_login' => $username,
+                'description' => $creds,
+            );
+            wp_update_user($userdata);
+            update_user_meta($the_existing_user->ID, 'ts_fab_twitter', $twitter);
+            update_user_meta($the_existing_user->ID, 'ts_fab_photo_url', $photo);
+        }
+    }
 }
-add_action( 'add_meta_boxes', 'display_meta_for_copyeditors' );
+
+
+// FIXME: current_user_can thing
+// // DISPLAY META FOR COPYEDITORS
+// function display_meta_for_copyeditors() {
+//
+//     global $post;
+//
+//     $submission_page = get_page_by_title( 'New Submission' );
+//     $parent_page = $post->post_parent;
+//
+//
+//     if ( $parent_page == $submission_page->ID ) {
+//
+//         $post_meta = get_post_custom( $post->ID );
+//
+//         for ( $i = 1; $i < 3; $i++ ) {
+//
+//             ${'PR_first_name_' . $i} = $post_meta['PR_first_name_' . $i][0];
+//             ${'PR_last_name_' . $i} = $post_meta['PR_last_name_' . $i][0];
+//             ${'PR_email_' . $i} = $post_meta['PR_email_' . $i][0];
+//             ${'PR_twitter_handle_' . $i} = $post_meta['PR_twitter_handle_' . $i][0];
+//             ${'PR_credentials_' . $i} = $post_meta['PR_credentials_' . $i][0];
+//
+//         }
+//
+//         for ( $i = 1; $i < 5; $i++ ) {
+//
+//             ${'coauthor_' . $i . '_first_name'} = $post_meta['coauthor_' . $i . '_first_name'][0];
+//             ${'coauthor_' . $i . '_last_name'} = $post_meta['coauthor_' . $i . '_last_name'][0];
+//             ${'coauthor_' . $i . '_email'} = $post_meta['coauthor_' . $i . '_email'][0];
+//             ${'coauthor_' . $i . '_twitter'} = $post_meta['coauthor_' . $i . '_twitter'][0];
+//             ${'coauthor_' . $i . '_credentials'} = $post_meta['coauthor_' . $i . '_credentials'][0];
+//
+//
+//         }
+//
+//         for ( $i = 3; $i < 7; $i++ ) {
+//             ${'SF_photo_' . $i . '_url'} = $post_meta['SF_photo_' . $i . '_url'][0];
+//         }
+//
+//         add_meta_box( 'peer_reviewer_meta_box', 'Expert Peer Reviewer Information', 'add_peer_reviewer_meta_box', 'page', 'side', 'high' );
+//         add_meta_box( 'coauthor_meta_box', 'Co-author Details', 'add_coauthor_meta_box', 'page', 'advanced', 'high');
+//     }
+//
+// }
+// add_action( 'add_meta_boxes', 'display_meta_for_copyeditors' );
 
 /**
  * END META BOX FUNCTIONS
@@ -436,14 +389,15 @@ add_action( 'add_meta_boxes', 'display_meta_for_copyeditors' );
  * BEGIN EMAIL FUNCTIONS
  */
 
-function draft_submitted_by_author( $post ) {
+function draft_submitted_by_author($post) {
 
-    if ( current_user_can('subscriber') ) {
+    if (current_user_can('subscriber')) {
 
-        global $copyeditor_email_list, $submission_editor_email;
+        global $copyeditor_emails, $SE_email;
+        $meta = json_decode(get_post_meta($post->ID, 'submission-flow', true), true);
 
         // SET PARENT PAGE
-        $submission_page = get_page_by_title( 'New Submission' );
+        $submission_page = get_page_by_title('New Submission');
 
         // ADD TITLE AND DRAFT IMAGE TO TOP OF DRAFT
         $updated_content = '<img class="aligncenter size-full wp-image-16521" src="http://www.aliem.com/wp-content/uploads/Draft.jpg" alt="Draft" width="400" height="116" /><h1>' . $post->post_title . '</h1>' . $post->post_content;
@@ -453,34 +407,21 @@ function draft_submitted_by_author( $post ) {
             'comment_status' => 'open',
             'post_content' => $updated_content,
         );
-        wp_update_post( $updated_post );
-
-
-        // ADD ROW TO TABLEPRESS TABLE
-        $post_custom = get_post_custom( $post->ID );
-        $first_author = get_user_by( 'id', $post->post_author );
-        $authors = $first_author->first_name . ' ' . $first_author->last_name;
-        $authors .= isset( $post_custom['coauthor_1_first_name'] ) ? ', ' . $post_custom['coauthor_1_first_name'][0] . ' ' . $post_custom['coauthor_1_last_name'][0] : '';
-        $authors .= isset( $post_custom['coauthor_2_first_name'] ) ? ', ' . $post_custom['coauthor_2_first_name'][0] . ' ' . $post_custom['coauthor_2_last_name'][0] : '';
-        $authors .= isset( $post_custom['coauthor_3_first_name'] ) ? ', ' . $post_custom['coauthor_3_first_name'][0] . ' ' . $post_custom['coauthor_3_last_name'][0] : '';
-        $authors .= isset( $post_custom['coauthor_4_first_name'] ) ? ', ' . $post_custom['coauthor_4_first_name'][0] . ' ' . $post_custom['coauthor_4_last_name'][0] : '';
-        tablepress_add( $authors, $post->post_title );
+        wp_update_post($updated_post);
 
         //////////////////////////////////
         // PREPARE VARIABLES FOR EMAILS //
         //////////////////////////////////
 
         // Is 'copyeditor_rotation' defined yet in the database? If not, start at 0
-        if ( get_option('copyeditor_rotation') == false ) {
-            add_option( 'copyeditor_rotation', 0 );
-        }
+        if (!get_option('copyeditor_rotation')) add_option('copyeditor_rotation', 0);
 
         // Variable to hold current number in copyeditor rotation
-        $which_copyeditor = get_option( 'copyeditor_rotation' );
+        $which_copyeditor = get_option('copyeditor_rotation');
 
         // Get author details, then set display name for email
 		$user_info = get_userdata($post->post_author);
-        $submitter_name = ( $user_info->display_name == '' ? $user_info->nicename : $user_info->display_name );
+        $submitter_name = ($user_info->display_name === '' ? $user_info->nicename : $user_info->display_name);
 
         /////////////////////////////////////////
         // PREPARE AND SEND CONFIRMATION EMAIL //
@@ -492,20 +433,20 @@ function draft_submitted_by_author( $post ) {
          */
         $recipients = array(
             $user_info->user_email,
-            $post_custom['coauthor_1_email'][0],
-            $post_custom['coauthor_2_email'][0],
-            $post_custom['coauthor_3_email'][0],
-            $post_custom['coauthor_4_email'][0],
+            $meta['coauthors']['coauthor_1_email'],
+            $meta['coauthors']['coauthor_2_email'],
+            $meta['coauthors']['coauthor_3_email'],
+            $meta['coauthors']['coauthor_4_email'],
         );
         foreach($recipients as $key => $value) {
-        	if($value == '' || $value === 'undefined') {
+        	if($value === '' || $value === 'undefined') {
             	unset($recipients[$key]);
             }
 		}
 
         $headers = array(
             'From: ALiEM Team <submission@aliem.com>',
-            'Cc: ' . $submission_editor_email,
+            'Cc: ' . $SE_email,
             'Content-Type: text/html',
             'charset=UTF-8',
         );
@@ -513,48 +454,31 @@ function draft_submitted_by_author( $post ) {
         $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
                    "<div style='font-size: 18px;'>" .
                    "<p>Thank you for your interest in posting content to ALiEM!</p>" .
-                   "<p>Your copyeditor, " . $copyeditor_email_list[$which_copyeditor]['name'] . ", has been notified and will begin " .
+                   "<p>Your copyeditor, " . $copyeditor_emails[$which_copyeditor]['name'] . ", has been notified and will begin " .
                    "proofing shortly. Once the proofing has been completed, you will be notified via email. " .
                    "At that time, we will also notify your selected Expert Peer Reviewer(s) that the draft is ready for their review. " .
                    "As a reminder, we assume that you have already spoken with your selected Expert Peer Reviewers and they have agreed to participate.</p>" .
                    "<p>If you have any questions, please feel free to contact your copyeditor or our Submission Editor via email at any time. " .
                    "For convienience, their contact information is listed below.</p>" .
-                   "<ul><li><strong>Copyeditor</strong>: " . $copyeditor_email_list[$which_copyeditor]['name'] . ", " . $copyeditor_email_list[$which_copyeditor]['email'] . "</li>" .
+                   "<ul><li><strong>Copyeditor</strong>: " . $copyeditor_emails[$which_copyeditor]['name'] . ", " . $copyeditor_emails[$which_copyeditor]['email'] . "</li>" .
                    "<li><strong>Submission Editor</strong>: Derek Sifford, submission@aliem.com</li></ul>" .
                    "<p>Thank you again for your interest. We look forward to working with you!</p>" .
                    "<p>Kind regards,<br>The ALiEM Team</p>";
         wp_mail( $recipients, $subject, $message, $headers );
 
-        ///////////////////////////////////////
-        // PREPARE AND SEND COPYEDITOR EMAIL //
-        ///////////////////////////////////////
-
-        $subject = 'ALiEM Copyedit Request: "' . $post->post_title . '"';
-        // Regex - Extract Copyeditor's first name
-        preg_match( "/(?:\\w+. )(\\w+)/", $copyeditor_email_list[$which_copyeditor]['name'], $copyeditor_first_name );
-
-        $message = "<img src='http://aliem.com/wp-content/uploads/2013/05/logo-horizontal-color.png'><br>" .
-                   "<div style='font-size: 18px;'>" .
-                   "<p>Hi " . $copyeditor_first_name[1] . "!</p>" .
-                   "<p>A submission titled \"<a href='" . $post->guid . "'>" . $post->post_title .
-                   "</a>\" has been submitted for review by " . $submitter_name . ".</p>" .
-                   "<p>Please copyedit at your earliest convienience.</p></div>";
-
-        wp_mail( $copyeditor_email_list[$which_copyeditor]['email'], $subject, $message, $headers );
-
         ///////////////////////////////////
         // INCREMENT COPYEDITOR ROTATION //
         ///////////////////////////////////
 
-        if ( $which_copyeditor < count($copyeditor_email_list) - 1 ) {
+        if ( $which_copyeditor < count($copyeditor_emails) - 1 ) {
             $which_copyeditor++;
             update_option( 'copyeditor_rotation', $which_copyeditor );
-        } else {
-            update_option( 'copyeditor_rotation', 0 );
+            wp_redirect( admin_url() );
+            return;
         }
 
+        update_option( 'copyeditor_rotation', 0 );
         wp_redirect( admin_url() );
-        exit();
 
 	}
 
@@ -564,7 +488,7 @@ add_action( 'draft_to_pending', 'draft_submitted_by_author' );
 
 function draft_published_by_copyeditor() {
 
-    global $post, $submission_editor_email;
+    global $post, $SE_email;
 
     $submission_page = get_page_by_title( 'New Submission' );
     $parent_page = $post->post_parent;
@@ -602,7 +526,7 @@ function draft_published_by_copyeditor() {
         // SET REQUIRED EMAIL VARIABLES
         $headers = array(
             'From: ALiEM Team <submission@aliem.com>',
-            'Cc: ' . $submission_editor_email,
+            'Cc: ' . $SE_email,
             'Content-Type: text/html',
             'charset=UTF-8',
         );
@@ -712,7 +636,6 @@ function finalize_submission( $post ) {
 
         }
 
-
         $page_to_post = $post;
         $page_to_post->post_type = 'post';
         wp_update_post( $page_to_post );
@@ -821,38 +744,5 @@ function parse_html_chars( $input ) {
     $output = preg_replace( "/<\\/p>/", "\n", $output );
     return( trim( $output ) );
 }
-
-
-// ADD ROW TO TABLEPRESS SPREADSHEET
-function tablepress_add( $author, $title ) {
-
-    global $wpdb;
-
-    $posttitle = 'Staging Area: Blog Posts in Progress';
-    $postid = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = 'Staging Area: Blog Posts in Progress' AND  post_name = 'staging-area-articles-in-progress'" );
-
-    $tablepress = get_post( $postid );
-    $tabledata = json_decode( $tablepress->post_content );
-
-    $date_today = date('m/d/Y');
-
-    $new_row = array(
-        $date_today,
-        $author,
-        $title,
-    );
-
-    array_push( $tabledata, $new_row );
-
-    $tabledata = json_encode( $tabledata );
-
-    $updated_post = array(
-        'ID' => $postid,
-        'post_content' => $tabledata
-    );
-    wp_update_post( $updated_post );
-
-}
-
 
 ?>
