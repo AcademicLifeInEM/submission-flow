@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
     $('#peer_reviewer_meta_box').find('button').remove();
 
     // TOGGLE DISABLED STATE ON COAUTHOR DETAIL BOXES
-    $('#coauthor_meta_box').find('input, textarea').prop('disabled', true);
+    $('#coauthor_meta_box').find('input, textarea').prop('readonly', true);
 
     // REMOVE HOVER EFFECT ON IMAGES;
     $('#peer_reviewer_meta_box').find('.has_hover').removeClass('has_hover');
@@ -30,9 +30,9 @@ jQuery(document).ready(function($) {
     $('#coauthor_container textarea').prop('cols', '44');
 
     // PREVENT EDITS
-    $('#coauthor_container').children().children().prop('disabled', 'true');
-    $('#peer_reviewer_1').children().prop('disabled', 'true');
-    $('#peer_reviewer_2').children().prop('disabled', 'true');
+    $('#coauthor_container').children().children().prop('readonly', 'true');
+    $('#peer_reviewer_1').children().prop('readonly', 'true');
+    $('#peer_reviewer_2').children().prop('readonly', 'true');
 
 
 });

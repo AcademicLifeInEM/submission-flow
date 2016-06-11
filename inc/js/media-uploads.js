@@ -30,8 +30,8 @@ jQuery(document).ready(function($) {
                 }
 
                 holderArray[index] = wp.media.frames.SF_photo = wp.media({
-                    title: meta_image.title,
-                    button: { text:  meta_image.button },
+                    title: 'Choose or Upload an Image',
+                    button: { text:  'Use this image' },
                     library: { type: 'image' }
                 });
 
