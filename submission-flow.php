@@ -196,10 +196,16 @@ class SubmissionFlow {
      * @return void
      */
     public static function slackMsg($endpoint, $body) {
+        $key = get_option('ALIEM_API_KEY');
         for ($i = 0; $i < 5; $i++) {
             $response = wp_remote_post(
                 "http://104.131.189.237:5000/newsubmissions/hooks/$endpoint",
-                array('body' => $body)
+                array(
+                    'headers' => array(
+                        'ALIEM_API_KEY' => $key,
+                    ),
+                    'body' => $body
+                )
             );
             if (!is_wp_error($response) && $response['response']['code'] == 200) {
                 break;
